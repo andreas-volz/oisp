@@ -1,0 +1,22 @@
+images 
+{
+  image: "pointer2.png" COMP;
+
+  // cursor images
+  image: "cursor_north.png" COMP;
+  image: "cursor_east.png" COMP;
+  image: "cursor_west.png" COMP;
+  image: "cursor_south.png" COMP;
+}
+
+fonts
+{
+  font: "FreeSans.ttf" "FreeSans";
+  font: "FreeSansBold.ttf" "FreeSansBold";
+}
+
+collections 
+{
+#include "pointer.edc"
+#include "cursor.edc"
+} /* Close Coll */

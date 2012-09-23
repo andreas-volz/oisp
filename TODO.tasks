@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<gtodo>
+  <category title="Bugs" place="0">
+    <item>
+      <attribute id="1213286117" priority="1" done="1" start_date="733205" completed_date="733255" notify="0" last_edited="1217625076"/>
+      <summary>remove not needed deps</summary>
+      <comment>each OISP should only reference the libs it really needs</comment>
+    </item>
+    <item>
+      <attribute id="1217625112" priority="1" done="1" start_date="733255" completed_date="733270" notify="0" last_edited="1218839083"/>
+      <summary>Find out which one in Dbus is Server and Client</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1219172241" priority="0" done="1" start_date="733273" completed_date="733976" notify="0" last_edited="1279914303"/>
+      <summary>Mapniksource::inputDataSource proposal</summary>
+      <comment>Here's the patch (attached as mem_featureset.patch) -- this makes
+memory_featureset::features work by patching memory_featureset to iterate
+through feature geometries.
+Also, here's the sample code which contains the point_datasource class which
+seems to work for the simple example provided:
+    http://github.com/lwu/cali.cpp-fourteener/tree/master/cali.cpp
+
+In other news, the Mapnik wiki login is back up again, and we started to put
+together an ExampleCode node. Check it out and contribute!
+    http://trac.mapnik.org/wiki/ExampleCode
+
+Mailing list:
+[Mapnik-users] Draw GPS Points to Map/Image</comment>
+    </item>
+    <item>
+      <attribute id="1325888096" priority="2" done="0" start_date="734508" enddate="99999999" notify="0" endtime="-60" last_edited="1325888096"/>
+      <summary>GPS receiver blocked/queued</summary>
+      <comment>// FIXME: GPS data is queued sometimes (e.g. while calculating route)
+//        result: the GPS position is completly wrong!
+//        solution: don't block the GPS data thread!!
+void Navigation::onGPSData(struct gps_data_t *gpsData)</comment>
+    </item>
+  </category>
+  <category title="Features" place="1">
+    <item>
+      <attribute id="1218839124" priority="1" done="1" start_date="733270" completed_date="733760" notify="0" last_edited="1261257786"/>
+      <summary>Create new library for OISPComm</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1218839098" priority="1" done="1" start_date="733270" completed_date="733976" notify="0" last_edited="1279914310"/>
+      <summary>Support for sigc++</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1261432121" priority="1" done="0" start_date="733762" enddate="99999999" notify="0" endtime="-60" last_edited="1321137160"/>
+      <summary>Library for oisp common</summary>
+      <comment>e.g. MathUtil.h</comment>
+    </item>
+    <item>
+      <attribute id="1321137178" priority="1" done="0" start_date="734453" enddate="99999999" notify="0" endtime="-60" last_edited="1321137178"/>
+      <summary>Split cairo stuff to library</summary>
+      <comment/>
+    </item>
+    <item>
+      <attribute id="1325888184" priority="2" done="0" start_date="734508" enddate="99999999" notify="0" endtime="-60" last_edited="1325888184"/>
+      <summary>Implement route guidance</summary>
+      <comment>calculate route list and follow with GPS position. Bug with queued GPS data needs to be solved first!</comment>
+    </item>
+  </category>
+</gtodo>

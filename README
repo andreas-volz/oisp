@@ -1,0 +1,19 @@
+Open Infotainment Service Provider (OISP)
+
+BUG:
+- check for StopClock correct
+
+Debug
+-----
+export DBUSXX_VERBOSE=1
+
+---------------------------------------------
+
+Germany complete (without GPS connection):
+
+without XML optimization:
+Navigation::getImageMap Time: 4.237713
+
+without roads and minor-roads:
+Navigation::getImageMap Time: 0.229287
+
