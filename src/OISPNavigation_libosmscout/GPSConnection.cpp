@@ -64,9 +64,9 @@ bool GPSConnection::open(const string &host, const string &port)
 {
   if (!connection)
   {
-    gpsDataGlobal = gps_open(host.c_str(), port.c_str());
+    bool ret = gps_open(host.c_str(), port.c_str(), gpsDataGlobal);
 
-    if (gpsDataGlobal)
+    if (!ret)
     {
       connection = true;
     }
@@ -106,9 +106,21 @@ bool GPSConnection::poll(struct gps_data_t *outGPSData)
 {
   int retVal = -1;
 
-  if (connection)
+  if(connection)
   {
-    retVal = gps_poll(gpsDataGlobal);
+    //retVal = gps_poll(gpsDataGlobal);
+    if(gps_waiting (gpsDataGlobal, 500))
+    {
+      errno = 0;
+      if(gps_read (gpsDataGlobal) == -1)
+      {
+
+      } 
+      else
+      {
+        outGPSData = gpsDataGlobal;
+      }
+    }
   }
 
   return !retVal;
@@ -120,10 +132,10 @@ void GPSConnection::setSignaling(bool inSignal)
 
   if (inSignal)
   {
-    gps_set_raw_hook(gpsDataGlobal, &gpsCallback);
+    //gps_set_raw_hook(gpsDataGlobal, &gpsCallback);
   }
   else
   {
-    gps_set_raw_hook(gpsDataGlobal, NULL);
+    //gps_set_raw_hook(gpsDataGlobal, NULL);
   }
 }

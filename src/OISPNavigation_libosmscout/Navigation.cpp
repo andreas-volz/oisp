@@ -60,7 +60,7 @@ void Navigation::initGPS()
 {
   if (mGPSCon.open())
   {
-    mGPSCon.query(WATCH_ENABLE | POLL_NONBLOCK);
+    mGPSCon.query(WATCH_ENABLE | WATCH_JSON);
     mGPSCon.setSignaling(true);
 
     mGPSCon.poll(&m_gpsData);

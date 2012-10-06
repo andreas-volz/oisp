@@ -14,6 +14,13 @@ AC_PROG_CXX
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
+AX_CXX_COMPILE_STDCXX_0X
+if test "$ax_cv_cxx_compile_cxx0x_native" = yes ||
+   test "$ax_cv_cxx_compile_cxx0x_cxx" = yes ||
+   test "$ax_cv_cxx_compile_cxx0x_gxx" = yes; then
+  CXXFLAGS="$CXXFLAGS -std=c++0x"
+fi
+
 AM_PROG_LIBTOOL
 
 dnl Check for option to enable profiling

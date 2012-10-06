@@ -278,7 +278,8 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
   mRouter.TransformRouteDataToWay(route, routingWay);
 
   mMapData.poiWays.clear();
-  mMapData.poiWays.push_back(osmscout::WayRef(routingWay));
+  // FIXME: temporary disabled to compile!
+  //mMapData.poiWays.push_back(osmscout::WayRef(routingWay));
 
   // show description
   printRouteList(route);
@@ -312,7 +313,8 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
   mAreaSearchParameter.SetMaximumWays(2000);
   mAreaSearchParameter.SetMaximumAreas(std::numeric_limits<size_t>::max());
 
-  mDatabase.GetObjects(*mStyleConfig,
+  // FIXME: temporary disabled to compile!
+  /*mDatabase.GetObjects(*mStyleConfig,
                        mProjection.GetLonMin(),
                        mProjection.GetLatMin(),
                        mProjection.GetLonMax(),
@@ -323,7 +325,7 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
                        mMapData.ways,
                        mMapData.areas,
                        mMapData.relationWays,
-                       mMapData.relationAreas);
+                       mMapData.relationAreas);*/
 
   if (mPainter.DrawMap(*mStyleConfig,
                        mProjection,
@@ -467,6 +469,8 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
 
   osmscout::TagId nameTagId = mDatabase.GetTypeConfig()->GetTagId("name");
 
+  // FIXME: temporary disabled to compile!
+/*
   if (!mDatabase.GetObjects(std::min(lonLeft, lonRight),
                             std::min(latTop, latBottom),
                             std::max(lonLeft, lonRight),
@@ -482,7 +486,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
 
     return false;
   }
-
+*/
   for (std::vector<osmscout::NodeRef>::const_iterator node = nodes.begin();
        node != nodes.end();
        node++)
