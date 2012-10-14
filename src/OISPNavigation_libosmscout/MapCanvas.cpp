@@ -217,13 +217,13 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
                                        limit, limitReached, true))
     {
       osmscout::WayRef wayReference;
-#if 0
+
       // search way reference
-      for (std::list<ObjectRef>::const_iterator or_it = (*streets.begin()).references.begin();
+      for (std::list<ObjectFileRef>::const_iterator or_it = (*streets.begin()).references.begin();
            or_it != (*streets.begin()).references.end();
            ++or_it)
       {
-        const osmscout::ObjectRef &reference = *or_it;
+        const osmscout::ObjectFileRef &reference = *or_it;
 
         if (reference.GetType() == osmscout::refNode)
         {
@@ -231,10 +231,9 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
         }
         else if (reference.GetType() == osmscout::refWay)
         {
-          if (mDatabase.GetWay(reference.GetId(), wayReference))
+          if (mDatabase.GetWayByOffset(reference.GetFileOffset(), wayReference))
           {
-            Id wayId = reference.GetId();
-            cout << "Found Way: " << wayReference->GetName() << " " << wayId << endl;
+            cout << "Found Way: " << wayReference->GetName() << endl;
 
             foundWay = wayReference;
             found = true;
@@ -250,7 +249,6 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
           assert(false);
         }
       }
-#endif
     }
     // <--
   }
