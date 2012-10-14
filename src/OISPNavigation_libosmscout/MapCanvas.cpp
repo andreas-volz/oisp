@@ -279,8 +279,9 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
   mRouter.TransformRouteDataToWay(route, routingWay);
 
   mMapData.poiWays.clear();
-  // FIXME: temporary disabled to compile!
-  //mMapData.poiWays.push_back(osmscout::WayRef(routingWay));
+
+  osmscout::WayRef wayRef (&routingWay);
+  mMapData.poiWays.push_back(wayRef);
 
   // show description
   printRouteList(route);
@@ -478,7 +479,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
   
   osmscout::TagId nameTagId = mDatabase.GetTypeConfig()->GetTagId("name");
 
-  if (!mDatabase.GetObjects(std::min(lonLeft, lonRight),
+    if (!mDatabase.GetObjects(std::min(lonLeft, lonRight),
                             std::min(latTop, latBottom),
                             std::max(lonLeft, lonRight),
                             std::max(latTop, latBottom),
