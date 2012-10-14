@@ -57,7 +57,7 @@ void GPSConnection::update()
 
 bool GPSConnection::open()
 {
-  return this->open("localhost", "122333"); // 2947
+  return this->open("localhost", "2947"); // 2947 122333
 }
 
 bool GPSConnection::open(const string &host, const string &port)
