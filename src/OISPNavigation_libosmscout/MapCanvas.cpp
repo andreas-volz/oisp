@@ -201,7 +201,7 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
   bool limitReached;
   Glib::ustring nextValidCharacters;
   int limit = 1; // max number of results
-  bool startWith;
+  bool startWith = false;
   bool found = false;
 
   std::list <osmscout::AdminRegion> regions;
@@ -217,7 +217,7 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
                                        limit, limitReached, true))
     {
       osmscout::WayRef wayReference;
-
+#if 0
       // search way reference
       for (std::list<ObjectRef>::const_iterator or_it = (*streets.begin()).references.begin();
            or_it != (*streets.begin()).references.end();
@@ -250,6 +250,7 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
           assert(false);
         }
       }
+#endif
     }
     // <--
   }
@@ -302,19 +303,27 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
 
   cout << "drawing with: lat=" << lat << " lon=" << lon << " zoom=" << zoom << endl;
 
-  mProjection.Set(lon,
-                  lat,
-                  zoom,
-                  mSize.width(),
-                  mSize.height());
+  mProjection.Set(lon, lat, zoom, mSize.width(), mSize.height());
+
+  osmscout::TypeSet nodeTypes;
+  std::vector<osmscout::TypeSet> wayTypes;
+  osmscout::TypeSet areaTypes;
+
+  mStyleConfig->GetNodeTypesWithMaxMag(mProjection.GetMagnification(), nodeTypes);
+
+  mStyleConfig->GetWayTypesByPrioWithMaxMag(mProjection.GetMagnification(), wayTypes);
+
+  mStyleConfig->GetAreaTypesWithMaxMag(mProjection.GetMagnification(), areaTypes);
+
 
   mAreaSearchParameter.SetMaximumAreaLevel(zoom);
   mAreaSearchParameter.SetMaximumNodes(2000);
   mAreaSearchParameter.SetMaximumWays(2000);
   mAreaSearchParameter.SetMaximumAreas(std::numeric_limits<size_t>::max());
 
-  // FIXME: temporary disabled to compile!
-  /*mDatabase.GetObjects(*mStyleConfig,
+  mDatabase.GetObjects(nodeTypes,
+                       wayTypes,
+                       areaTypes,
                        mProjection.GetLonMin(),
                        mProjection.GetLatMin(),
                        mProjection.GetLonMax(),
@@ -325,7 +334,7 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
                        mMapData.ways,
                        mMapData.areas,
                        mMapData.relationWays,
-                       mMapData.relationAreas);*/
+                       mMapData.relationAreas);
 
   if (mPainter.DrawMap(*mStyleConfig,
                        mProjection,
@@ -392,8 +401,8 @@ Glib::ustring MapCanvas::calcNextValidCharacters(const std::list <osmscout::Loca
 
 bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, double lonRight, const std::list<std::string> &typeNames, osmscout::WayRef &foundWay, osmscout::Point &foundWayPoint)
 {
-  std::string                   map;
-  std::vector<osmscout::TypeId> types;
+  std::string map;
+  TypeSet types;
   bool ret = false;
 
   double latMedium = (latTop + latBottom) / 2.0;
@@ -407,7 +416,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
   std::cout << "x";
   std::cout << "[" << std::max(latTop, latBottom) << "," << std::max(lonLeft, lonRight) << "]" << std::endl;
 
-  types.reserve(typeNames.size() * 3); // Avoid dynamic resize
+  //types.reserve(typeNames.size() * 3); // Avoid dynamic resize
 
   for (std::list<std::string>::const_iterator name = typeNames.begin();
        name != typeNames.end();
@@ -435,7 +444,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
     {
       std::cout << " node (" << nodeType << ")";
 
-      types.push_back(nodeType);
+      types.SetType(nodeType);
     }
 
     if (wayType != osmscout::typeIgnore)
@@ -444,7 +453,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
 
       if (wayType != nodeType)
       {
-        types.push_back(wayType);
+        types.SetType(wayType);
       }
     }
 
@@ -454,7 +463,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
 
       if (areaType != nodeType && areaType != wayType)
       {
-        types.push_back(areaType);
+        types.SetType(areaType);
       }
     }
 
@@ -466,11 +475,9 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
   std::vector<osmscout::WayRef> areas;
   std::vector<osmscout::RelationRef> relationWays;
   std::vector<osmscout::RelationRef> relationAreas;
-
+  
   osmscout::TagId nameTagId = mDatabase.GetTypeConfig()->GetTagId("name");
 
-  // FIXME: temporary disabled to compile!
-/*
   if (!mDatabase.GetObjects(std::min(lonLeft, lonRight),
                             std::min(latTop, latBottom),
                             std::max(lonLeft, lonRight),
@@ -486,7 +493,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
 
     return false;
   }
-*/
+
   for (std::vector<osmscout::NodeRef>::const_iterator node = nodes.begin();
        node != nodes.end();
        node++)
