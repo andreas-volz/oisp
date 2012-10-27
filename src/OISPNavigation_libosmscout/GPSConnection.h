@@ -42,12 +42,12 @@ public:
   /*! Query a request to gpsd.
    * @param request The request string.
    */
-  bool query(unsigned int flags);
+  bool stream(unsigned int flags);
 
-  /*! Poll only a single GPS position.
+  /*! read a single GPS position.
    * @param outGPSData Get the GPS data from gpsd.
    */
-  bool poll(struct gps_data_t *outGPSData);
+  bool read(struct gps_data_t *outGPSData);
 
   /*! Set if the gpsd callback should be active
    * @param inSignal Set true for active and false for inactive

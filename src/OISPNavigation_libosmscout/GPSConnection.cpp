@@ -10,6 +10,7 @@ using namespace std;
 
 // ******* global functions *******
 static struct gps_data_t *gpsDataGlobal;
+static struct gps_data_t gpsDataG;
 static pthread_mutex_t gpsMutex = PTHREAD_MUTEX_INITIALIZER;
 static GPSConnection *gpsConGlobal = NULL;
 
@@ -64,7 +65,7 @@ bool GPSConnection::open(const string &host, const string &port)
 {
   if (!connection)
   {
-    bool ret = gps_open(host.c_str(), port.c_str(), gpsDataGlobal);
+    bool ret = gps_open(host.c_str(), port.c_str(), &gpsDataG);
 
     if (!ret)
     {
@@ -75,7 +76,7 @@ bool GPSConnection::open(const string &host, const string &port)
   return connection;
 }
 
-bool GPSConnection::query(unsigned int flags)
+bool GPSConnection::stream(unsigned int flags)
 {
   int retVal = -1;
 
@@ -84,7 +85,7 @@ bool GPSConnection::query(unsigned int flags)
     struct gps_data_t gpsDataLocal;
 
     pthread_mutex_lock(&gpsMutex);
-    memcpy(&gpsDataLocal, gpsDataGlobal, sizeof(struct gps_data_t));
+    memcpy(&gpsDataLocal, &gpsDataG, sizeof(struct gps_data_t));
     pthread_mutex_unlock(&gpsMutex);
 
     retVal = gps_stream(&gpsDataLocal, flags, NULL);
@@ -102,23 +103,22 @@ void GPSConnection::close()
   }
 }
 
-bool GPSConnection::poll(struct gps_data_t *outGPSData)
+bool GPSConnection::read(struct gps_data_t *outGPSData)
 {
   int retVal = -1;
 
   if(connection)
   {
-    //retVal = gps_poll(gpsDataGlobal);
-    if(gps_waiting (gpsDataGlobal, 500))
+    if(gps_waiting (&gpsDataG, 500))
     {
       errno = 0;
-      if(gps_read (gpsDataGlobal) == -1)
+      if(gps_read (&gpsDataG) == -1)
       {
 
       } 
       else
       {
-        outGPSData = gpsDataGlobal;
+        *outGPSData = gpsDataG;
       }
     }
   }

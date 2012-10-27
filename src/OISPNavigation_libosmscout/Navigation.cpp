@@ -60,10 +60,10 @@ void Navigation::initGPS()
 {
   if (mGPSCon.open())
   {
-    mGPSCon.query(WATCH_ENABLE | WATCH_JSON);
+    mGPSCon.stream(WATCH_ENABLE | WATCH_JSON);
     mGPSCon.setSignaling(true);
 
-    mGPSCon.poll(&m_gpsData);
+    mGPSCon.read(&m_gpsData);
     dumpGPSData(&m_gpsData);
 
     // setup the gps handler before the first poll
@@ -71,7 +71,7 @@ void Navigation::initGPS()
 
     // do a first poll before the timer starts to see the position earlier
     // FIXME: so the idea, but it needs some time to show. Not sure why...
-    mGPSCon.poll(&m_gpsData);
+    mGPSCon.read(&m_gpsData);
 
     sigc::slot <bool, Ecorexx::Timer &> timerSlot = sigc::mem_fun(*this, &Navigation::triggerGPSPoll);
 
@@ -86,7 +86,8 @@ void Navigation::initGPS()
 
 bool Navigation::triggerGPSPoll(Ecorexx::Timer &timer)
 {
-  mGPSCon.poll(&m_gpsData);
+  mGPSCon.read(&m_gpsData);
+  onGPSData(&m_gpsData);
 
   return true;
 }
@@ -113,7 +114,7 @@ void Navigation::getGPSPositionWGS84(double &outLon, double &outLat)
     // Brachtpe: 51.005 , 7.79596
 
     double lat = 50.302847;
-    double lon = 9.298067;
+    double lon = 8.298067;
 
     outLat = lat;
     outLon = lon;
