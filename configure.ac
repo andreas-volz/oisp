@@ -27,7 +27,7 @@ dnl Check for option to enable profiling
 AC_MSG_CHECKING(whether to enable profiling)
 AC_ARG_ENABLE(profiling,
         [  --enable-profiling=[no/yes]        enables profiling build (default=yes)],,
-                 enable_profiling=yes)
+                 enable_profiling=no)
 
 AS_IF( [ ! test "x$enable_profiling" != "xyes"],[
   AC_DEFINE(PROFILING, 1, [Define to enable profiling build])
