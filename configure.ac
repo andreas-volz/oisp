@@ -38,19 +38,19 @@ AS_IF( [ ! test "x$enable_profiling" != "xyes"],[
 ])
 
 dnl Check for boost
-AX_BOOST_BASE
-if test "$succeeded" != "yes" ; then
-  echo "Error: You need to install the boost library!"
-  exit
-fi
+#AX_BOOST_BASE
+#if test "$succeeded" != "yes" ; then
+#  echo "Error: You need to install the boost library!"
+#  exit
+#fi
 
-AX_BOOST_FILESYSTEM
-if test "x$ax_cv_boost_filesystem" = "xno"; then
-  echo
-  echo "Error: You need to install the boost filesystem library!"
-  echo
-  exit
-fi
+#AX_BOOST_FILESYSTEM
+#if test "x$ax_cv_boost_filesystem" = "xno"; then
+#  echo
+#  echo "Error: You need to install the boost filesystem library!"
+#  echo
+#  exit
+#fi
 
 dnl Check for headers
 ACX_PTHREAD
