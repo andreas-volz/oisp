@@ -99,7 +99,7 @@ PKG_CHECK_MODULES(DBUSMMECORE, dbus-c++-1 dbus-c++-ecore-1)
 AC_SUBST(DBUSMM_CFLAGS)
 AC_SUBST(DBUSMM_LIBS)
 
-PKG_CHECK_MODULES(EFL, evasxx edjexx ecorexx evas cairo emotionxx)
+PKG_CHECK_MODULES(EFL, evasxx edjexx ecorexx evas cairo)
 AC_SUBST(EFL_CFLAGS)
 AC_SUBST(EFL_LIBS)
 
@@ -157,7 +157,7 @@ AC_DEFINE_UNQUOTED(SYSTEM_PIXMAPS_DIR, "${packageprefix}/${systempixmapsdir}",""
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 
 PKG_CHECK_MODULES(LIBOSMSCOUT, libosmscout-map libosmscout libosmscout-map-cairo)
-PKG_CHECK_MODULES(EMOTION, emotionxx)
+dnl PKG_CHECK_MODULES(EMOTION, emotionxx)
 PKG_CHECK_MODULES(UDEV, libudev)
 PKG_CHECK_MODULES(STOPCLOCK, StopClock)
 AC_OUTPUT([
