@@ -132,10 +132,10 @@ void GPSConnection::setSignaling(bool inSignal)
 
   if (inSignal)
   {
-    //gps_set_raw_hook(gpsDataGlobal, &gpsCallback);
+
   }
   else
   {
-    //gps_set_raw_hook(gpsDataGlobal, NULL);
+
   }
 }
