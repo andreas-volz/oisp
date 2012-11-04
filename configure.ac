@@ -26,7 +26,7 @@ AM_PROG_LIBTOOL
 dnl Check for option to enable profiling
 AC_MSG_CHECKING(whether to enable profiling)
 AC_ARG_ENABLE(profiling,
-        [  --enable-profiling=[no/yes]        enables profiling build (default=yes)],,
+        [  --enable-profiling=[no/yes]        enables profiling build (default=no)],,
                  enable_profiling=no)
 
 AS_IF( [ ! test "x$enable_profiling" != "xyes"],[
@@ -159,7 +159,7 @@ AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}","")
 PKG_CHECK_MODULES(LIBOSMSCOUT, libosmscout-map libosmscout libosmscout-map-cairo)
 dnl PKG_CHECK_MODULES(EMOTION, emotionxx)
 PKG_CHECK_MODULES(UDEV, libudev)
-PKG_CHECK_MODULES(STOPCLOCK, StopClock)
+
 AC_OUTPUT([
 Makefile
 src/Makefile

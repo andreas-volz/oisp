@@ -40,8 +40,7 @@ OISPNavigation_libosmscout_LDADD =  \
 	$(GLIBMM_LIBS)  \
 	$(EFL_LIBS)  \
 	$(PROFILING_LIBS)  \
-	$(OICFPROVIDER_LIBS)  \
-	$(STOPCLOCK_LIBS)
+	$(OICFPROVIDER_LIBS)  
 
 OISPNavigation_libosmscout_CXXFLAGS =  \
 	$(PROFILING_CFLAGS)  \
@@ -53,8 +52,7 @@ OISPNavigation_libosmscout_CXXFLAGS =  \
 	$(GLIBMM_CFLAGS)  \
 	$(EFL_CFLAGS)  \
 	$(PROFILING_CFLAGS)  \
-	$(OICFPROVIDER_CFLAGS) \
-	$(STOPCLOCK_CFLAGS)
+	$(OICFPROVIDER_CFLAGS) 
 
 
 OISPNavigation_libosmscout_CFLAGS =  \
