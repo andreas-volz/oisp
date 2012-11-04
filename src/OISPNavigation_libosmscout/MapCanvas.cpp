@@ -9,8 +9,10 @@
 #include "util.h"
 #include "Vector2.h"
 
+#ifdef PROFILING
 // StopClock
 #include <StopClock/StopClock.h>
+#endif
 
 using namespace std;
 using namespace osmscout;
@@ -268,10 +270,13 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
   cout << "Route from (way/node): " << wayStart->GetId() << "/" << (*wayStart->nodes.begin()).GetId() << endl;
   cout << "Route to (way/node): " << wayTarget->GetId() << "/" << (*wayTarget->nodes.begin()).GetId() << endl;
 
+#ifdef PROFILING
   StopClock sc;
+#endif
   mRouter.CalculateRoute(mRoutingProfile, wayStart->GetId(), wayStartPoint.GetId(), wayTarget->GetId(), (*wayTarget->nodes.begin()).GetId(), route);
+#ifdef PROFILING
   cout << "CalculateRoute needs " << sc.getElapsedTime(StopClock::TIME_UNIT_SECONDS) << " sec" << endl;
-
+#endif
   // draw the route in map
   Way routingWay;
   mRouter.TransformRouteDataToWay(route, routingWay);

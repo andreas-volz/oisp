@@ -13,7 +13,9 @@
 #include <eflxx/Eflxx.h>
 #include <ecorexx/Ecorexx.h>
 
+#ifdef PROFILING
 #include <StopClock/StopClock.h>
+#endif
 
 class MapCanvas : public Esmartxx::Cairo
 {

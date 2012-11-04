@@ -88,9 +88,11 @@ bool NavigationScreen::drawerTask(Ecorexx::Timer &timer)
   // temporary zoom animation counter
   static int i = 0;
   //i += 200; // activate this to see zoom in animation
-
+#ifdef PROFILING
   mDrawTime = mDrawClock.getElapsedTime(::StopClock::TIME_UNIT_MILISECONDS);
-
+#else
+  mDrawTime = 999;
+#endif
   // this implements very raw a frame drop...
   // draw map only if last draw has took < n ms
   // larger time cases means system is very busy and rendering needs to long...
@@ -109,7 +111,9 @@ bool NavigationScreen::drawerTask(Ecorexx::Timer &timer)
   {
     cerr << "Skip map drawing frame!" << endl;
   }
+#ifdef PROFILING
   mDrawClock.resetClock();
+#endif
 
   double x = 0;
   double y = 0;

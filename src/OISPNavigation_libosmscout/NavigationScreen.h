@@ -57,7 +57,9 @@ private:
   MapCanvas mMapCanvas;
 
   Ecorexx::Timer *mDrawTimer;
+#ifdef PROFILING
   ::StopClock mDrawClock;
+#endif
   float mDrawTime;
 
   double mLon;
