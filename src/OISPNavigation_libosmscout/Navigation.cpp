@@ -27,12 +27,14 @@ Navigation::Navigation(OICFNavigationListenerProvider *mapViewerListenerProvider
   mGPSTimer(NULL),
   mNavScreen(NULL)
 {
-  initGPS();
 }
 
 Navigation::~Navigation()
 {
-  mGPSTimer->destroy();
+  if(mGPSTimer)
+  {
+    mGPSTimer->destroy();
+  }
 }
 
 void Navigation::start()
@@ -56,9 +58,9 @@ void Navigation::setOICFNavigationListenerProvider(OICFNavigationListenerProvide
   mNavigationListenerProvider = mapViewerListenerProvider;
 }
 
-void Navigation::initGPS()
+void Navigation::initGPS(const std::string &host, int port)
 {
-  if (mGPSCon.open())
+  if (mGPSCon.open(host, port))
   {
     mGPSCon.stream(WATCH_ENABLE | WATCH_JSON);
     mGPSCon.setSignaling(true);

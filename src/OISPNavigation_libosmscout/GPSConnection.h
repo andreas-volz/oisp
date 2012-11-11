@@ -10,7 +10,6 @@
 // TODO: - think about wrapping libgpsmm
 //       - signaling doesn't work at the moment!
 
-using std::string;
 
 /*!
  * Attention: You need to dispatch the signal if you're
@@ -24,16 +23,17 @@ public:
   GPSConnection();
   virtual ~GPSConnection();
 
-  /*!
-   * Open a connection to a gpsd on localhost:2947.
-   */
-  bool open();
-
-  /*! Open a connection to a gpsd on given host and port.
+  /*! Open a connection to a gpsd on given host and port (default on localhost:2947).
    * @param host The host where gpsd runs.
    * @param port The port where gpsd runs.
    */
-  bool open(const string &host, const string &port);
+  bool open(const std::string &host = "localhost", int port = 2947);
+
+  /*! Open a connection to a gpsd on given host and port (default on localhost:2947).
+   * @param host The host where gpsd runs.
+   * @param port The port where gpsd runs.
+   */
+  bool open(const std::string &host = "localhost", const std::string &port = "2947");
 
   /*! Closes the gpsd connection.
    */

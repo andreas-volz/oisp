@@ -5,6 +5,7 @@
 #include <iostream>
 #include "GPSConnection.h"
 #include <cstring>
+#include "util.h"
 
 using namespace std;
 
@@ -56,9 +57,9 @@ void GPSConnection::update()
   }
 }
 
-bool GPSConnection::open()
+bool GPSConnection::open(const std::string &host, int port)
 {
-  return this->open("localhost", "2947"); // 2947 122333
+  return this->open(host, toString(port));
 }
 
 bool GPSConnection::open(const string &host, const string &port)

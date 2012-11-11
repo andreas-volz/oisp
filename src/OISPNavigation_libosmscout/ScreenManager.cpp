@@ -20,7 +20,7 @@ ScreenManager::~ScreenManager()
 {
 }
 
-void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
+void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size, bool desktop)
 {
   mNavigationScreen = NULL;
 
@@ -33,9 +33,7 @@ void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
   mw = new Ecorexx::EvasWindowSoftwareX11(mSize);
   mw->setAlpha(true);
 
-  // pin on desktop: TODO: better option handling:
-  // http://code.google.com/p/google-gflags/ or libgetopt++
-  if ((argc >= 2) && (string(argv[1]) == "--desktop"))
+  if (desktop)
   {
     Ecorexx::XWindow *xwin = mw->getXWindow();
     xwin->setNetWMWindowType(Ecorexx::XWindow::Desktop);

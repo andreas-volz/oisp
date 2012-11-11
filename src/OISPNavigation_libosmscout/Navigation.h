@@ -29,6 +29,8 @@ public:
     South
   };
 
+  void initGPS(const std::string &host, int port);
+  
   void start();
 
   void setOICFNavigationListenerProvider(OICFNavigationListenerProvider *mapViewerListenerProvider);
@@ -68,7 +70,6 @@ public:
 protected:
 
 private:
-  void initGPS();
   void onGPSData(struct gps_data_t *gpsData);
   void dumpGPSData(struct gps_data_t *gpsData);
 
