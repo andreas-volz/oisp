@@ -29,7 +29,9 @@ OISPNavigation_libosmscout_SOURCES = \
 	esmart_cairo.c \
 	Esmart_Cairo.h \
 	Vector2.h       \
-	optionparser.h
+	optionparser.h       \
+	Preferences.cpp       \
+	Preferences.h
 
 OISPNavigation_libosmscout_LDADD =  \
 	$(PROFILING_LIBS)  \

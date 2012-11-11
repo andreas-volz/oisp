@@ -8,6 +8,7 @@
 #include "MapCanvas.h"
 #include "util.h"
 #include "Vector2.h"
+#include "Preferences.h"
 
 #ifdef PROFILING
 // StopClock
@@ -80,13 +81,13 @@ void MapCanvas::destroySurface()
 
 void MapCanvas::initOSMScout()
 {
-  string region("current");
-  string map("/home/andreas/.osmscout/map/" + region);
+  Preferences &preferences = Preferences::instance ();
+  std::string map (preferences.getNaviMapFolder());
   std::string style(map + "/standard.oss");
 
   if (!mDatabase.Open(map.c_str(), &MapCanvas::createHash))
   {
-    std::cerr << "Cannot open database" << std::endl;
+    std::cerr << "Cannot open database: " << map << std::endl;
     exit(1);
     // TODO: throw Exception
   }
@@ -95,7 +96,7 @@ void MapCanvas::initOSMScout()
 
   if (!LoadStyleConfig(style.c_str(), *mStyleConfig))
   {
-    std::cerr << "Cannot open style" << std::endl;
+    std::cerr << "Cannot open style: " << style << std::endl;
     // TODO: throw Exception
   }
 

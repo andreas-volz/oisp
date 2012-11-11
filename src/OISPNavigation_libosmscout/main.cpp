@@ -33,6 +33,7 @@
 #include "Navigation.h"
 #include "OICFNavigationProviderImpl.h"
 #include "optionparser.h"
+#include "Preferences.h"
 
 static const char *MAP_VIEWER_NAME = "org.oicf.Navigation";
 
@@ -40,8 +41,6 @@ using namespace std;
 using namespace Eflxx;
 
 static const Eflxx::Size initialWindowSize(800, 480);
-bool desktop = false;
-int gpsd_port = 2947;
 
 DBus::Ecore::BusDispatcher dispatcher;
 
@@ -104,7 +103,7 @@ struct Arg: public option::Arg
   }
 };
 
-enum  optionIndex { UNKNOWN, HELP, GPSDPORT, DESKTOP, TEST };
+enum  optionIndex { UNKNOWN, HELP, DESKTOP, GPSDPORT, NAVIMAP };
  const option::Descriptor usage[] =
  {
   {UNKNOWN, 0,"" , ""    ,option::Arg::None, "USAGE: example [options]\n\n"
@@ -112,6 +111,7 @@ enum  optionIndex { UNKNOWN, HELP, GPSDPORT, DESKTOP, TEST };
   {HELP,    0,"h" , "help",option::Arg::None, "  --help, -h  \tPrint usage and exit." },
   {DESKTOP,0,"d" , "desktop",option::Arg::None, "  --desktop, -d  \tPin application to desktop layer." },
   {GPSDPORT, 0,"g" , "gpsd-port",Arg::Numeric, "  --gpsd-port, -g  \tUser specific gpsd port (default: 2947)." },
+  {NAVIMAP, 0,"n" , "navimap",Arg::Required, "  --navimap, -n  \tSet folder to search osmscout map." },
   {UNKNOWN, 0,""  ,  ""   ,option::Arg::None, "\nExamples:\n"
                                              "  example --unknown -- --this_is_no_option\n"
                                              "  example -unk --plus -ppp file1 file2\n" },
@@ -120,6 +120,7 @@ enum  optionIndex { UNKNOWN, HELP, GPSDPORT, DESKTOP, TEST };
 
 int parseOptions(int argc, char **argv)
 {
+  Preferences &preferences = Preferences::instance ();
   argc -= (argc > 0); argv += (argc > 0); // skip program name argv[0] if present
   option::Stats  stats(usage, argc, argv);
   option::Option options[stats.options_max], buffer[stats.buffer_max];
@@ -137,12 +138,17 @@ int parseOptions(int argc, char **argv)
   // parse options
   if(options[DESKTOP].count() > 0)
   {
-    desktop = true;
+    preferences.setDesktopLayer(true);
   }
 
   if(options[GPSDPORT].count() > 0)
   {
-    gpsd_port = atoi(options[GPSDPORT].arg);
+    preferences.setGPSDPort(atoi(options[GPSDPORT].arg));
+  }
+
+  if(options[NAVIMAP].count() > 0)
+  {
+    preferences.setNaviMapFolder(options[NAVIMAP].arg);
   }
  
   for(option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())
@@ -163,12 +169,14 @@ int main(int argc, char **argv)
   signal(SIGTERM, sig_exit);
   signal(SIGINT, sig_exit);
 
+  Preferences &preferences = Preferences::instance ();
+  preferences.init ();
   
   parseOptions(argc, argv);
 
   // create and init ScreenManager (and Ecore!!)
   ScreenManager &screenManager(ScreenManager::instance());
-  screenManager.init(argc, argv, initialWindowSize, desktop);
+  screenManager.init(argc, argv, initialWindowSize);
 
   // initialize Glib thread system
   if (!Glib::thread_supported()) Glib::thread_init();
@@ -192,7 +200,7 @@ int main(int argc, char **argv)
 
   // create navigation object after DBus and screen init
   Navigation navigation (&mapViewerListenerProvider);
-  navigation.initGPS("localhost", gpsd_port);
+  navigation.initGPS(preferences.getGPSDHost(), preferences.getGPSDPort());
 
   navigationScreen.setNavigation(&navigation);
   mapProvider.setNavigation(&navigation);

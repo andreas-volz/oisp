@@ -6,6 +6,7 @@
 #include <iostream>
 #include <Ecore.h>
 #include "NavigationScreen.h"
+#include "Preferences.h"
 
 using namespace std;
 using namespace Eflxx;
@@ -20,8 +21,10 @@ ScreenManager::~ScreenManager()
 {
 }
 
-void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size, bool desktop)
+void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
 {
+  Preferences &preferences = Preferences::instance ();
+  
   mNavigationScreen = NULL;
 
   mSize = size;
@@ -33,7 +36,7 @@ void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size, bool de
   mw = new Ecorexx::EvasWindowSoftwareX11(mSize);
   mw->setAlpha(true);
 
-  if (desktop)
+  if (preferences.getDesktopLayer())
   {
     Ecorexx::XWindow *xwin = mw->getXWindow();
     xwin->setNetWMWindowType(Ecorexx::XWindow::Desktop);

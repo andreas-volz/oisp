@@ -122,10 +122,15 @@ else
   packageprefix=${prefix}
 fi
 
+#dnl Set SYSTEM DIRS in config.h
+systemdatadir=share
+systemdocdir=doc
+systempixmapsdir=share/pixmaps
+
 #dnl Set PACKAGE DIRS in config.h
-packagedatadir=share/${PACKAGE}
-packagedocdir=doc/${PACKAGE}
-packagepixmapsdir=share/pixmaps/${PACKAGE}
+packagedatadir=${systemdatadir}/${PACKAGE}
+packagedocdir=${systemdocdir}/${PACKAGE}
+packagepixmapsdir=${systempixmapsdir}/${PACKAGE}
 
 #dnl Subst PACKAGE_DATA_DIR.
 NO_PREFIX_PACKAGE_DATA_DIR="${packagedatadir}"

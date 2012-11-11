@@ -22,7 +22,7 @@ public:
     return evas;
   }
 
-  void init(int argc, char **argv, const Eflxx::Size &size, bool desktop = false);
+  void init(int argc, char **argv, const Eflxx::Size &size);
 
   const Eflxx::Size getSize();
 
