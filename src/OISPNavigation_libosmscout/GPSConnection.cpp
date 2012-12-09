@@ -10,7 +10,6 @@
 using namespace std;
 
 // ******* global functions *******
-static struct gps_data_t *gpsDataGlobal;
 static struct gps_data_t gpsDataG;
 static pthread_mutex_t gpsMutex = PTHREAD_MUTEX_INITIALIZER;
 static GPSConnection *gpsConGlobal = NULL;
@@ -44,17 +43,15 @@ void GPSConnection::update()
 {
   struct gps_data_t gpsDataLocal;
 
-  if (gpsDataGlobal)
-  {
-    pthread_mutex_lock(&gpsMutex);
-    memcpy(&gpsDataLocal, gpsDataGlobal, sizeof(struct gps_data_t));
-    pthread_mutex_unlock(&gpsMutex);
+  /*pthread_mutex_lock(&gpsMutex);
+  memcpy(&gpsDataLocal, gpsDataGlobal, sizeof(struct gps_data_t));
+  pthread_mutex_unlock(&gpsMutex);*/
 
-    if (gpsConGlobal)
-    {
-      gpsConGlobal->signalData.emit(&gpsDataLocal);
-    }
+  if (gpsConGlobal)
+  {
+    gpsConGlobal->signalData.emit(&gpsDataLocal);
   }
+
 }
 
 bool GPSConnection::open(const std::string &host, int port)
@@ -99,7 +96,7 @@ void GPSConnection::close()
 {
   if (connection)
   {
-    gps_close(gpsDataGlobal);
+    gps_close(&gpsDataG);
     connection = false;
   }
 }

@@ -215,49 +215,54 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
 
   if (mDatabase.GetMatchingAdminRegions(city, regions, limit, limitReached, startWith))
   {
-    const osmscout::AdminRegion &region = *(regions.begin());
-
-    cout << "admin region:" << region.name << endl;
-
-    /// search street -->
-    if (mDatabase.GetMatchingLocations(region, street, streets,
-                                       limit, limitReached, true))
+    if(regions.size() >= 1)
     {
-      osmscout::WayRef wayReference;
+      const osmscout::AdminRegion &region = *(regions.begin());
 
-      // search way reference
-      for (std::list<ObjectFileRef>::const_iterator or_it = (*streets.begin()).references.begin();
-           or_it != (*streets.begin()).references.end();
-           ++or_it)
+      cout << "admin region:" << region.name << endl;
+
+      /// search street -->
+      if (mDatabase.GetMatchingLocations(region, street, streets,
+                                         limit, limitReached, true))
       {
-        const osmscout::ObjectFileRef &reference = *or_it;
+        osmscout::WayRef wayReference;
 
-        if (reference.GetType() == osmscout::refNode)
+        cout << "streets.size(): " << streets.size() << endl;
+        fflush(stdout);
+        
+        // search way reference
+        for (std::list<ObjectFileRef>::const_iterator or_it = (*streets.begin()).references.begin();
+             or_it != (*streets.begin()).references.end();
+             ++or_it)
         {
-          // ignore for way finding
-        }
-        else if (reference.GetType() == osmscout::refWay)
-        {
-          if (mDatabase.GetWayByOffset(reference.GetFileOffset(), wayReference))
+          const osmscout::ObjectFileRef &reference = *or_it;
+
+          if (reference.GetType() == osmscout::refNode)
           {
-            cout << "Found Way: " << wayReference->GetName() << endl;
-
-            foundWay = wayReference;
-            found = true;
-            break; // leave for-loop
+            // ignore for way finding
           }
-        }
-        else if (reference.GetType() == osmscout::refRelation)
-        {
-          // ignore for way finding
-        }
-        else
-        {
-          assert(false);
+          else if (reference.GetType() == osmscout::refWay)
+          {
+            if (mDatabase.GetWayByOffset(reference.GetFileOffset(), wayReference))
+            {
+              cout << "Found Way: " << wayReference->GetName() << endl;
+
+              foundWay = wayReference;
+              found = true;
+              break; // leave for-loop
+            }
+          }
+          else if (reference.GetType() == osmscout::refRelation)
+          {
+            // ignore for way finding
+          }
+          else
+          {
+            assert(false);
+          }
         }
       }
     }
-    // <--
   }
 
   return found;
@@ -283,16 +288,16 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
   cout << "CalculateRoute needs " << sc.getElapsedTime(StopClock::TIME_UNIT_SECONDS) << " sec" << endl;
 #endif
   // draw the route in map
-  Way routingWay;
-  mRouter.TransformRouteDataToWay(route, routingWay);
+  //Way routingWay;
+  //mRouter.TransformRouteDataToWay(route, routingWay);
 
-  mMapData.poiWays.clear();
+  //mMapData.poiWays.clear();
 
-  osmscout::WayRef wayRef (&routingWay);
-  mMapData.poiWays.push_back(wayRef);
+  //osmscout::WayRef wayRef (&routingWay);
+  //mMapData.poiWays.push_back(wayRef);
 
   // show description
-  printRouteList(route);
+  //printRouteList(route);
 }
 
 bool MapCanvas::GeoToPixel(double lon, double lat, double &x, double &y)
