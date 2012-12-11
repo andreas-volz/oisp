@@ -166,6 +166,7 @@ Makefile
 src/Makefile
 src/OISPControl/Makefile
 src/OISPControl_keyb/Makefile
+src/OISPControl_simu/Makefile
 src/OISPNavigation_libosmscout/Makefile
 src/OISPMedia/Makefile
 data/Makefile

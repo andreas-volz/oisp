@@ -17,8 +17,8 @@ OISPNavigation_libosmscout_SOURCES = \
 	util.h       \
 	searchFile.cpp       \
 	searchFile.h       \
-	Exceptions.cpp       \
-	Exceptions.h       \
+	FileNotFoundException.cpp       \
+	FileNotFoundException.h       \
 	ScreenManager.cpp       \
 	ScreenManager.h       \
 	MapCanvas.cpp       \

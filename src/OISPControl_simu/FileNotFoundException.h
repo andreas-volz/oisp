@@ -1,4 +1,4 @@
-#ifndef EXCEPTIONS_H
+#ifndef FILE_NOT_FOUND_EXCEPTION_H
 #define EXCEPTIONS_H
 
 #include <exception>
@@ -14,4 +14,4 @@ private:
   const std::string &txt;
 };
 
-#endif // EXCEPTIONS_H
+#endif // FILE_NOT_FOUND_EXCEPTION_H

@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include "searchFile.h"
-#include "Exceptions.h"
+#include "FileNotFoundException.h"
 
 #define DATA_THEME_DIR "themes/default/"
 
