@@ -13,6 +13,7 @@
 #include "util.h"
 #include "Vector2.h"
 #include "Preferences.h"
+#include "MemoryUtil.h"
 
 #ifdef PROFILING
 // StopClock
@@ -287,14 +288,15 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
 #ifdef PROFILING
   cout << "CalculateRoute needs " << sc.getElapsedTime(StopClock::TIME_UNIT_SECONDS) << " sec" << endl;
 #endif
+  
   // draw the route in map
-  //Way routingWay;
-  //mRouter.TransformRouteDataToWay(route, routingWay);
+  Way routingWay;
+  mRouter.TransformRouteDataToWay(route, routingWay);
 
-  //mMapData.poiWays.clear();
+  // clear all POIs before (FIXME should only clear current route)
+  //delete_stl_container(mMapData.poiWays);
 
-  //osmscout::WayRef wayRef (&routingWay);
-  //mMapData.poiWays.push_back(wayRef);
+  mMapData.poiWays.push_back(new osmscout::Way(routingWay));
 
   // show description
   //printRouteList(route);
