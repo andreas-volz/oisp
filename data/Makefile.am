@@ -1,1 +1,2 @@
-SUBDIRS = themes
+SUBDIRS = themes \
+	  OISPControl_simu

@@ -1,0 +1,1179 @@
+collections {
+   group {
+      name: "OISPControl_simu";
+      min: 400 402;
+      max: 400 402;
+      images {
+         image: "background.png" COMP;
+         image: "dds_button.png" COMP;
+         image: "volume_button.png" COMP;
+         image: "button_media_bg.png" COMP;
+         image: "button_menu_bg.png" COMP;
+         image: "button_nav_bg.png" COMP;
+         image: "button_phone_bg.png" COMP;
+				 image: "button_return_bg.png" COMP;
+         image: "cross_button.png" COMP;
+         image: "cross_arrow_up.png" COMP;
+         image: "cross_arrow_down.png" COMP;
+         image: "cross_arrow_left.png" COMP;
+         image: "cross_arrow_right.png" COMP;
+         image: "button_return_text.png" COMP;
+         image: "button_media_text.png" COMP;
+         image: "button_menu_text.png" COMP;
+         image: "button_nav_text.png" COMP;
+         image: "button_phone_text.png" COMP;
+         image: "button_return_unpressed_overlay.png" COMP;
+         image: "button_media_unpressed_overlay.png" COMP;
+         image: "button_nav_unpressed_overlay.png" COMP;
+         image: "button_phone_unpressed_overlay.png" COMP;
+         image: "button_menu_unpressed_overlay.png" COMP;
+         image: "button_menu_pressed_overlay.png" COMP;
+         image: "button_phone_pressed_overlay.png" COMP;
+         image: "button_return_pressed_overlay.png" COMP;
+         image: "button_nav_pressed_overlay.png" COMP;
+         image: "button_media_pressed_overlay.png" COMP;
+         image: "dds_right.png" COMP;
+         image: "dds_left.png" COMP;
+         image: "volume_left.png" COMP;
+         image: "volume_right.png" COMP;
+         image: "cross_left_press_mask.png" COMP;
+         image: "cross_right_press_mask.png" COMP;
+         image: "cross_up_press_mask.png" COMP;
+         image: "cross_down_press_mask.png" COMP;
+      }
+
+      parts {
+
+         part {
+            name: "background";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 400 402;
+               max: 400 402;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 0 0;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -1 -1;
+               }
+               image.normal: "background.png";
+            }
+         }
+
+
+         part {
+            name: "dds_button";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 153 153;
+               max: 153 153;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -276 -221;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -123 -69;
+               }
+               image.normal: "dds_button.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit: "default" 0.0;
+							 color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "volume_button";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 60 60;
+               max: 60 60;
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 16 17;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -324 -325;
+               }
+               image.normal: "volume_button.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit : "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "button_media_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 137 46;
+               max: 137 46;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 8 -209;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -255 -164;
+               }
+               image.normal: "button_media_bg.png";
+            }
+         }
+
+
+         part {
+            name: "button_menu_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 137 46;
+               max: 137 46;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 7 -130;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -255 -84;
+               }
+               image.normal: "button_menu_bg.png";
+            }
+         }
+
+
+         part {
+            name: "button_nav_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 137 46;
+               max: 137 46;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -145 -211;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -9 -165;
+               }
+               image.normal: "button_nav_bg.png";
+            }
+         }
+
+
+         part {
+            name: "button_phone_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 137 46;
+               max: 137 46;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -145 -129;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -8 -83;
+               }
+               image.normal: "button_phone_bg.png";
+            }
+         }
+
+         part {
+            name: "button_return_bg";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 156 53;
+               max: 156 53;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -278 -63;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -123 -10;
+               }
+               image.normal: "button_return_bg.png";
+            }
+         }
+
+         part {
+            name: "cross_button";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 119 119;
+               max: 119 119;
+               rel1 {
+                  relative: 1.0 0.0;
+                  offset: -260 32;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -141 -251;
+               }
+               image.normal: "cross_button.png";
+            }
+         }
+
+         part {
+            name: "cross_arrow_up";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 12 9;
+               max: 12 9;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -206 -344;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -194 -336;
+               }
+               image.normal: "cross_arrow_up.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit: "default" 0.0;
+							 color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "cross_arrow_down";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 12 9;
+               max: 12 9;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -206 -286;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -195 -278;
+               }
+               image.normal: "cross_arrow_down.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit: "default" 0.0;
+							 color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "cross_arrow_left";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 9 12;
+               max: 9 12;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -233 -316;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -225 -305;
+               }
+               image.normal: "cross_arrow_left.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit: "default" 0.0;
+							 color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "cross_arrow_right";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 9 12;
+               max: 9 12;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -175 -316;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -167 -305;
+               }
+               image.normal: "cross_arrow_right.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit: "default" 0.0;
+							 color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "button_return_text";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 81 15;
+               max: 81 15;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -243 -43;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -163 -29;
+               }
+               image.normal: "button_return_text.png";
+            }
+         }
+
+
+         part {
+            name: "button_media_text";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 64 15;
+               max: 64 15;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -366 -194;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -302 -180;
+               }
+               image.normal: "button_media_text.png";
+            }
+         }
+
+
+         part {
+            name: "button_menu_text";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 57 15;
+               max: 57 15;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -363 -114;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -307 -99;
+               }
+               image.normal: "button_menu_text.png";
+            }
+         }
+
+
+         part {
+            name: "button_nav_text";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 40 15;
+               max: 40 15;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -84 -195;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -44 -181;
+               }
+               image.normal: "button_nav_text.png";
+            }
+         }
+
+
+         part {
+            name: "button_phone_text";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               min: 69 15;
+               max: 69 15;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -98 -114;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -30 -99;
+               }
+               image.normal: "button_phone_text.png";
+            }
+         }
+
+         part {
+            name: "button_return_overlay";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 143 39;
+               max: 143 39;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -272 -56;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -130 -17;
+               }
+               image.normal: "button_return_unpressed_overlay.png";
+            }
+            description {
+               state: "pressed" 0.0;
+               min: 144 40;
+               max: 144 40;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -273 -55;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -129 -16;
+               }
+               image.normal: "button_return_pressed_overlay.png";
+            }
+         }
+
+         part {
+            name: "button_nav_overlay";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 114 35;
+               max: 114 35;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -129 -205;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -16 -170;
+               }
+               image.normal: "button_nav_unpressed_overlay.png";
+            }
+            description {
+               state: "pressed" 0.0;
+               min: 115 35;
+               max: 115 35;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -130 -205;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -15 -170;
+               }
+               image.normal: "button_nav_pressed_overlay.png";
+            }
+         }
+
+         part {
+            name: "button_menu_overlay";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 114 34;
+               max: 114 34;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 14 -124;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -271 -90;
+               }
+               image.normal: "button_menu_unpressed_overlay.png";
+            }
+            description {
+               state: "pressed" 0.0;
+               min: 115 35;
+               max: 115 35;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 14 -124;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -270 -90;
+               }
+               image.normal: "button_menu_pressed_overlay.png";
+            }
+         }
+
+         part {
+            name: "button_phone_overlay";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 115 36;
+               max: 115 36;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -129 -123;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -15 -88;
+               }
+               image.normal: "button_phone_unpressed_overlay.png";
+            }
+            description {
+               state: "pressed" 0.0;
+               min: 115 35;
+               max: 115 35;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -129 -124;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -15 -90;
+               }
+               image.normal: "button_phone_pressed_overlay.png";
+            }
+         }
+
+         part {
+            name: "button_media_overlay";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 114 36;
+               max: 114 36;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 15 -204;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -271 -168;
+               }
+               image.normal: "button_media_unpressed_overlay.png";
+            }
+            description {
+               state: "pressed" 0.0;
+               min: 115 35;
+               max: 115 35;
+               rel1 {
+                  relative: 0.0 1.0;
+                  offset: 14 -203;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -270 -169;
+               }
+               image.normal: "button_media_pressed_overlay.png";
+            }
+         }
+
+
+         part {
+            name: "dds_right";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 29 35;
+               max: 29 35;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -175 -184;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -147 -149;
+               }
+               image.normal: "dds_right.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit : "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "dds_left";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 29 35;
+               max: 29 35;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -250 -184;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -222 -149;
+               }
+               image.normal: "dds_left.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit : "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+         part {
+            name: "volume_left";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 16 20;
+               max: 16 20;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -375 -368;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -359 -349;
+               }
+               image.normal: "volume_left.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit : "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "volume_right";
+            type: IMAGE;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 16 20;
+               max: 16 20;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -349 -369;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -333 -349;
+               }
+               image.normal: "volume_right.png";
+            }
+            description {
+               state: "highlight" 0.0;
+               inherit : "default" 0.0;
+               color: 255 0 0 255;
+            }
+         }
+
+
+         part {
+            name: "cross_left_press_mask";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 25 21;
+               max: 25 21;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -237 -321;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -213 -301;
+               }
+            }
+         }
+
+         part {
+            name: "cross_right_press_mask";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 25 21;
+               max: 25 21;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -187 -321;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -163 -301;
+               }
+            }
+         }
+
+         part {
+            name: "cross_up_press_mask";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 21 25;
+               max: 21 25;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -210 -348;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -190 -323;
+               }
+            }
+         }
+
+         part {
+            name: "cross_down_press_mask";
+            type: RECT;
+            mouse_events: 1;
+            description {
+               state: "default" 0.0;
+               min: 21 25;
+               max: 21 25;
+               color: 0 0 0 0;
+               rel1 {
+                  relative: 1.0 1.0;
+                  offset: -210 -299;
+               }
+               rel2 {
+                  relative: 1.0 1.0;
+                  offset: -190 -275;
+               }
+            }
+         }
+
+	 			programs {
+
+            /* +DDS */
+		 			  program {
+			 		     name: "dds_left_down";
+					     signal: "mouse,down,1*";
+					     source: "dds_left";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "dds_left";
+					  }
+
+				    program {
+			 		     name: "dds_left_up";
+					     signal: "mouse,up,1";
+					     source: "dds_left";
+							 action: STATE_SET "default" 0.0;
+							 target: "dds_left";
+					  }
+
+			    program {
+			 		     name: "dds_left_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "dds_left";
+					     action: SIGNAL_EMIT "clicked" "dds_left";
+					  }
+
+		 			  program {
+			 		     name: "dds_right_down";
+					     signal: "mouse,down,1*";
+					     source: "dds_right";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "dds_right";
+					  }
+
+				    program {
+			 		     name: "dds_right_up";
+					     signal: "mouse,up,1";
+					     source: "dds_right";
+							 action: STATE_SET "default" 0.0;
+							 target: "dds_right";
+					  }
+
+			    program {
+			 		     name: "dds_right_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "dds_right";
+					     action: SIGNAL_EMIT "clicked" "dds_right";
+					  }
+
+		 			  program {
+			 		     name: "dds_button_down";
+					     signal: "mouse,down,1*";
+					     source: "dds_button";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "dds_button";
+					  }
+
+				    program {
+			 		     name: "dds_button_up";
+					     signal: "mouse,up,1";
+					     source: "dds_button";
+							 action: STATE_SET "default" 0.0;
+							 target: "dds_button";
+					  }
+
+			      program {
+			 		     name: "dds_button_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "dds_button";
+					     action: SIGNAL_EMIT "clicked" "dds_button";
+					  }
+            /* -DDS */        
+
+            /* +button volume */
+		 			  program {
+			 		     name: "volume_left_down";
+					     signal: "mouse,down,1*";
+					     source: "volume_left";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "volume_left";
+					  }
+
+				    program {
+			 		     name: "volume_left_up";
+					     signal: "mouse,up,1";
+					     source: "volume_left";
+							 action: STATE_SET "default" 0.0;
+							 target: "volume_left";
+					  }
+
+			    program {
+			 		     name: "volume_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "volume_left";
+					     action: SIGNAL_EMIT "clicked" "volume_left";
+					  }
+
+		 			  program {
+			 		     name: "volume_right_down";
+					     signal: "mouse,down,1*";
+					     source: "volume_right";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "volume_right";
+					  }
+
+				    program {
+			 		     name: "volume_right_up";
+					     signal: "mouse,up,1";
+					     source: "volume_right";
+							 action: STATE_SET "default" 0.0;
+							 target: "volume_right";
+					  }
+
+			    program {
+			 		     name: "volume_right_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "volume_right";
+					     action: SIGNAL_EMIT "clicked" "volume_right";
+					  }
+
+		 			  program {
+			 		     name: "volume_button_down";
+					     signal: "mouse,down,1*";
+					     source: "volume_button";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "volume_button";
+					  }
+
+				    program {
+			 		     name: "volume_button_up";
+					     signal: "mouse,up,1";
+					     source: "volume_button";
+							 action: STATE_SET "default" 0.0;
+							 target: "volume_button";
+					  }
+
+			      program {
+			 		     name: "volume_button_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "volume_button";
+					     action: SIGNAL_EMIT "clicked" "volume_button";
+					  }
+            /* -button volume */
+
+            /* +button menu */
+		 			  program {
+			 		     name: "button_menu_down";
+					     signal: "mouse,down,1*";
+					     source: "button_menu_overlay";
+							 action: STATE_SET "pressed" 0.0;
+							 target: "button_menu_overlay";
+					  }
+
+				    program {
+			 		     name: "button_menu_up";
+					     signal: "mouse,up,1";
+					     source: "button_menu_overlay";
+							 action: STATE_SET "default" 0.0;
+							 target: "button_menu_overlay";
+					  }
+
+			      program {
+			 		     name: "button_menu_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "button_menu_overlay";
+					     action: SIGNAL_EMIT "clicked" "button_menu";
+					  }
+            /* -button menu */
+
+            /* +button nav */
+		 			  program {
+			 		     name: "button_nav_down";
+					     signal: "mouse,down,1*";
+					     source: "button_nav_overlay";
+							 action: STATE_SET "pressed" 0.0;
+							 target: "button_nav_overlay";
+					  }
+
+				    program {
+			 		     name: "button_nav_up";
+					     signal: "mouse,up,1";
+					     source: "button_nav_overlay";
+							 action: STATE_SET "default" 0.0;
+							 target: "button_nav_overlay";
+					  }
+
+			      program {
+			 		     name: "button_nav_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "button_nav_overlay";
+					     action: SIGNAL_EMIT "clicked" "button_nav";
+					  }
+            /* -button nav */
+
+            /* +button media */
+		 			  program {
+			 		     name: "button_media_down";
+					     signal: "mouse,down,1*";
+					     source: "button_media_overlay";
+							 action: STATE_SET "pressed" 0.0;
+							 target: "button_media_overlay";
+					  }
+
+				    program {
+			 		     name: "button_media_up";
+					     signal: "mouse,up,1";
+					     source: "button_media_overlay";
+							 action: STATE_SET "default" 0.0;
+							 target: "button_media_overlay";
+					  }
+
+			      program {
+			 		     name: "button_media_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "button_media_overlay";
+					     action: SIGNAL_EMIT "clicked" "button_media";
+					  }
+            /* -button media */
+
+            /* +button phone */
+		 			  program {
+			 		     name: "button_phone_down";
+					     signal: "mouse,down,1*";
+					     source: "button_phone_overlay";
+							 action: STATE_SET "pressed" 0.0;
+							 target: "button_phone_overlay";
+					  }
+
+				    program {
+			 		     name: "button_phone_up";
+					     signal: "mouse,up,1";
+					     source: "button_phone_overlay";
+							 action: STATE_SET "default" 0.0;
+							 target: "button_phone_overlay";
+					  }
+
+			      program {
+			 		     name: "button_phone_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "button_phone_overlay";
+					     action: SIGNAL_EMIT "clicked" "button_phone";
+					  }
+            /* -button phone */
+
+            /* +button return */
+		 			  program {
+			 		     name: "button_return_down";
+					     signal: "mouse,down,1*";
+					     source: "button_return_overlay";
+							 action: STATE_SET "pressed" 0.0;
+							 target: "button_return_overlay";
+					  }
+
+				    program {
+			 		     name: "button_return_up";
+					     signal: "mouse,up,1";
+					     source: "button_return_overlay";
+							 action: STATE_SET "default" 0.0;
+							 target: "button_return_overlay";
+					  }
+
+			      program {
+			 		     name: "button_return_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "button_return_overlay";
+					     action: SIGNAL_EMIT "clicked" "button_return";
+					  }
+            /* -button return */
+
+            /* +cross axis left */
+		 			  program {
+			 		     name: "cross_left_down";
+					     signal: "mouse,down,1*";
+					     source: "cross_left_press_mask";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "cross_arrow_left";
+					  }
+
+				    program {
+			 		     name: "cross_left_up";
+					     signal: "mouse,up,1";
+					     source: "cross_left_press_mask";
+							 action: STATE_SET "default" 0.0;
+							 target: "cross_arrow_left";
+					  }
+
+			      program {
+			 		     name: "cross_left_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "cross_left_press_mask";
+					     action: SIGNAL_EMIT "clicked" "cross_left";
+					  }
+            /* -cross axis left */
+
+            /* +cross axis right */
+		 			  program {
+			 		     name: "cross_right_down";
+					     signal: "mouse,down,1*";
+					     source: "cross_right_press_mask";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "cross_arrow_right";
+					  }
+
+				    program {
+			 		     name: "cross_right_up";
+					     signal: "mouse,up,1";
+					     source: "cross_right_press_mask";
+							 action: STATE_SET "default" 0.0;
+							 target: "cross_arrow_right";
+					  }
+
+			      program {
+			 		     name: "cross_right_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "cross_right_press_mask";
+					     action: SIGNAL_EMIT "clicked" "cross_right";
+					  }
+            /* -cross axis right */
+
+            /* +cross axis up */
+		 			  program {
+			 		     name: "cross_up_down";
+					     signal: "mouse,down,1*";
+					     source: "cross_up_press_mask";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "cross_arrow_up";
+					  }
+
+				    program {
+			 		     name: "cross_up_up";
+					     signal: "mouse,up,1";
+					     source: "cross_up_press_mask";
+							 action: STATE_SET "default" 0.0;
+							 target: "cross_arrow_up";
+					  }
+
+			      program {
+			 		     name: "cross_up_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "cross_up_press_mask";
+					     action: SIGNAL_EMIT "clicked" "cross_up";
+					  }
+            /* -cross axis up */
+
+            /* +cross axis down */
+		 			  program {
+			 		     name: "cross_down_down";
+					     signal: "mouse,down,1*";
+					     source: "cross_down_press_mask";
+							 action: STATE_SET "highlight" 0.0;
+							 target: "cross_arrow_down";
+					  }
+
+				    program {
+			 		     name: "cross_down_up";
+					     signal: "mouse,up,1";
+					     source: "cross_down_press_mask";
+							 action: STATE_SET "default" 0.0;
+							 target: "cross_arrow_down";
+					  }
+
+			      program {
+			 		     name: "cross_down_clicked";
+					     signal: "mouse,clicked,1";
+					     source: "cross_down_press_mask";
+					     action: SIGNAL_EMIT "clicked" "cross_down";
+					  }
+            /* -cross axis down */
+				 }
+
+      }
+   }
+}
+
+

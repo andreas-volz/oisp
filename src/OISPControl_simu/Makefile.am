@@ -1,8 +1,8 @@
 
 bin_PROGRAMS = \
-	OISPControl_keyb
+	OISPControl_simu
 
-OISPControl_keyb_SOURCES = \
+OISPControl_simu_SOURCES = \
 	main.cpp \
 	searchFile.cpp \
 	searchFile.h \
@@ -11,7 +11,7 @@ OISPControl_keyb_SOURCES = \
 	OICFControlListenerProviderImpl.cpp \
 	OICFControlListenerProviderImpl.h 
 
-OISPControl_keyb_LDADD = \
+OISPControl_simu_LDADD = \
         $(PROFILING_LIBS) \
         $(DBUSMM_LIBS) \
         $(DBUSMMECORE_LIBS) \
@@ -19,7 +19,7 @@ OISPControl_keyb_LDADD = \
         $(EFL_LIBS) \
         $(OICFPROVIDER_LIBS)
 
-OISPControl_keyb_CXXFLAGS = \
+OISPControl_simu_CXXFLAGS = \
         $(PROFILING_CFLAGS) \
         $(DBUSMM_CFLAGS) \
         $(DBUSMMECORE_CFLAGS) \

@@ -1,0 +1,37 @@
+EXTRA_DIST=\
+background.png \
+button_media_bg.png \
+button_media_pressed_overlay.png \
+button_media_text.png \
+button_media_unpressed_overlay.png \
+button_menu_bg.png \
+button_menu_pressed_overlay.png \
+button_menu_text.png \
+button_menu_unpressed_overlay.png \
+button_nav_bg.png \
+button_nav_pressed_overlay.png \
+button_nav_text.png \
+button_nav_unpressed_overlay.png \
+button_phone_bg.png \
+button_phone_pressed_overlay.png \
+button_phone_text.png \
+button_phone_unpressed_overlay.png \
+button_return_bg.png \
+button_return_pressed_overlay.png \
+button_return_text.png \
+button_return_unpressed_overlay.png \
+cross_arrow_down.png \
+cross_arrow_left.png \
+cross_arrow_right.png \
+cross_arrow_up.png \
+cross_button.png \
+cross_down_press_mask.png \
+cross_left_press_mask.png \
+cross_right_press_mask.png \
+cross_up_press_mask.png \
+dds_button.png \
+dds_left.png \
+dds_right.png \
+volume_button.png \
+volume_left.png \
+volume_right.png
