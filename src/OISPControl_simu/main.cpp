@@ -35,9 +35,9 @@ void buttonFunc(const std::string emmision, const std::string source)
   KeyEvent keyEvent;
   keyEvent.time = 0; // FIXME
 
-  keyEvent.number = KeyEvent::X;
-  keyEvent.value = KeyEvent::Min;
-  controlServer->onAxisListener(keyEvent);
+  keyEvent.number = KeyEvent::Media;
+  keyEvent.value = KeyEvent::Down;
+  controlServer->onButtonListener(keyEvent);
 }
 
 void evas_quit(const Ecorexx::EvasWindow &win)
@@ -48,7 +48,7 @@ void evas_quit(const Ecorexx::EvasWindow &win)
 int main( int argc, const char **argv )
 {
   // Create the application object
-  Ecorexx::Application app (argc, argv, "Simple Edje Test");
+  Ecorexx::Application app (argc, argv, "OISPControl Panel Simulator");
 
   DBus::default_dispatcher = &dispatcher;
 
@@ -71,9 +71,9 @@ int main( int argc, const char **argv )
   Evasxx::Canvas &evas = mw.getCanvas();
   
   // Add some objects to the canvas
-  Edjexx::Object edje (evas, Point (0, 0), searchDataFile ("OISPControl_simu/OISPControl_simu_edited.edj"), "OISPControl_simu");
+  Edjexx::Object edje (evas, Point (0, 0), searchDataFile ("OISPControl_simu/themes/panel/OISPControl_simu_panel.edj"), "OISPControl_simu");
   
-  edje.connect("clicked", "Button01", sigc::ptr_fun(&buttonFunc));
+  edje.connect("clicked", "button_media", sigc::ptr_fun(&buttonFunc));
   
   edje.resize( s );
 

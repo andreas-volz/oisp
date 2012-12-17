@@ -174,4 +174,8 @@ data/themes/Makefile
 data/themes/default/Makefile
 data/themes/default/images/Makefile
 data/themes/default/fonts/Makefile
+data/OISPControl_simu/Makefile
+data/OISPControl_simu/themes/Makefile
+data/OISPControl_simu/themes/panel/Makefile
+data/OISPControl_simu/themes/panel/images/Makefile
 ])
