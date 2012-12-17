@@ -36,10 +36,6 @@ collections {
          image: "dds_left.png" COMP;
          image: "volume_left.png" COMP;
          image: "volume_right.png" COMP;
-         image: "cross_left_press_mask.png" COMP;
-         image: "cross_right_press_mask.png" COMP;
-         image: "cross_up_press_mask.png" COMP;
-         image: "cross_down_press_mask.png" COMP;
       }
 
       parts {
