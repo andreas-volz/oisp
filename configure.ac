@@ -91,10 +91,6 @@ PKG_CHECK_MODULES(DBUSMM, dbus-c++-1)
 AC_SUBST(DBUSMM_CFLAGS)
 AC_SUBST(DBUSMM_LIBS)
 
-PKG_CHECK_MODULES(DBUSMMGLIB, dbus-c++-1 dbus-c++-glib-1)
-AC_SUBST(DBUSMM_CFLAGS)
-AC_SUBST(DBUSMM_LIBS)
-
 PKG_CHECK_MODULES(DBUSMMECORE, dbus-c++-1 dbus-c++-ecore-1)
 AC_SUBST(DBUSMM_CFLAGS)
 AC_SUBST(DBUSMM_LIBS)
@@ -102,10 +98,6 @@ AC_SUBST(DBUSMM_LIBS)
 PKG_CHECK_MODULES(EFL, evasxx edjexx ecorexx evas cairo)
 AC_SUBST(EFL_CFLAGS)
 AC_SUBST(EFL_LIBS)
-
-PKG_CHECK_MODULES(GTK, gtk+-2.0)
-AC_SUBST(GTK_CFLAGS)
-AC_SUBST(GTK_LIBS)
 
 PKG_CHECK_MODULES(OICFPROVIDER, OICFControlProvider OICFNavigationProvider OICFMediaProvider)
 AC_SUBST(OICFPROVIDER_CFLAGS)
@@ -165,7 +157,6 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/OISPControl/Makefile
-src/OISPControl_keyb/Makefile
 src/OISPControl_simu/Makefile
 src/OISPNavigation_libosmscout/Makefile
 src/OISPMedia/Makefile

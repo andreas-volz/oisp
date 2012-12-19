@@ -5,6 +5,5 @@
 SUBDIRS = \
 	OISPNavigation_libosmscout \
 	OISPControl \
-	OISPControl_keyb \
 	OISPControl_simu
 
