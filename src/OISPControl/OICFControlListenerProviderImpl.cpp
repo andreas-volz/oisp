@@ -26,64 +26,64 @@ OICFControlListenerProviderImpl::OICFControlListenerProviderImpl(DBus::Connectio
 
 void OICFControlListenerProviderImpl::onAxisListenerWrap(const EventJoystick &event)
 {
-  KeyEvent keyEvent;
+  AxisEvent axisEvent;
 
   cout << "Axis - ";
   printf("Number: %d", event.number);
   printf(", Value: %d", event.value);
   printf(", synthetic: %d\n", event.synthetic);
 
-  keyEvent.time = event.time;
-  keyEvent.value = event.value;
-  keyEvent.number = event.number;
+  axisEvent.time = event.time;
+  axisEvent.value = event.value;
+  axisEvent.number = event.number;
 
-  if ((event.number == 0) && (keyEvent.value > 0))
+  if ((event.number == 0) && (axisEvent.value > 0))
   {
-    keyEvent.number = KeyEvent::X;
-    keyEvent.value = KeyEvent::Max;
+    axisEvent.number = AxisEvent::X;
+    axisEvent.value = AxisEvent::Max;
   }
-  else if ((event.number == 0) && (keyEvent.value == 0))
+  else if ((event.number == 0) && (event.value == 0))
   {
-    keyEvent.number = KeyEvent::X;
-    keyEvent.value = KeyEvent::Zero;
+    axisEvent.number = AxisEvent::X;
+    axisEvent.value = AxisEvent::Zero;
   }
-  else if ((event.number == 0) && (keyEvent.value < 0))
+  else if ((event.number == 0) && (event.value < 0))
   {
-    keyEvent.number = KeyEvent::X;
-    keyEvent.value = KeyEvent::Min;
+    axisEvent.number = AxisEvent::X;
+    axisEvent.value = AxisEvent::Min;
   }
-  else if ((event.number == 1) && (keyEvent.value > 0))
+  else if ((event.number == 1) && (event.value > 0))
   {
-    keyEvent.number = KeyEvent::Y;
-    keyEvent.value = KeyEvent::Max;
+    axisEvent.number = AxisEvent::Y;
+    axisEvent.value = AxisEvent::Max;
   }
-  else if ((event.number == 1) && (keyEvent.value == 0))
+  else if ((event.number == 1) && (event.value == 0))
   {
-    keyEvent.number = KeyEvent::Y;
-    keyEvent.value = KeyEvent::Zero;
+    axisEvent.number = AxisEvent::Y;
+    axisEvent.value = AxisEvent::Zero;
   }
-  else if ((event.number == 1) && (keyEvent.value < 0))
+  else if ((event.number == 1) && (event.value < 0))
   {
-    keyEvent.number = KeyEvent::Y;
-    keyEvent.value = KeyEvent::Min;
+    axisEvent.number = AxisEvent::Y;
+    axisEvent.value = AxisEvent::Min;
   }
 
-  onAxisListener(keyEvent);
+  onAxisListener(axisEvent);
 }
 
 void OICFControlListenerProviderImpl::onButtonListenerWrap(const EventJoystick &event)
 {
-  KeyEvent keyEvent;
+  ButtonEvent buttonEvent;
 
-  keyEvent.time = event.time;
+  buttonEvent.time = event.time;
 
   switch (event.value)
   {
   case 0:
-    keyEvent.value = KeyEvent::Up;
+    buttonEvent.value = ButtonEvent::Up;
     break;
   case 1:
-    keyEvent.value = KeyEvent::Down;
+    buttonEvent.value = ButtonEvent::Down;
     break;
   default:
     break;
@@ -97,50 +97,42 @@ void OICFControlListenerProviderImpl::onButtonListenerWrap(const EventJoystick &
   switch (event.number)
   {
   case 0:
-    keyEvent.number = KeyEvent::One;
+    cout << "button 0 not yet used" << endl;
     break;
 
   case 1:
-    keyEvent.number = KeyEvent::Two;
+    buttonEvent.number = ButtonEvent::Volume;
     break;
 
   case 2:
-    keyEvent.number = KeyEvent::Three;
+    buttonEvent.number = ButtonEvent::Return;
     break;
 
   case 3:
-    keyEvent.number = KeyEvent::Four;
+    buttonEvent.number = ButtonEvent::DDS;
     break;
 
   case 4:
-    keyEvent.number = KeyEvent::Navigation;
+    buttonEvent.number = ButtonEvent::Navigation;
     break;
 
   case 5:
-    keyEvent.number = KeyEvent::Media;
+    buttonEvent.number = ButtonEvent::Media;
     break;
 
   case 6:
-    keyEvent.number = KeyEvent::Test;
+    buttonEvent.number = ButtonEvent::Phone;
     break;
 
   case 7:
-    keyEvent.number = KeyEvent::Test2;
-    break;
-
-  case 8:
-    keyEvent.number = KeyEvent::Menu;
-    break;
-
-  case 9:
-    keyEvent.number = KeyEvent::Start;
+    buttonEvent.number = ButtonEvent::Menu;
     break;
 
   default:
     break;
   };
 
-  onButtonListener(keyEvent);
+  onButtonListener(buttonEvent);
 }
 
 std::map< std::string, std::string > OICFControlListenerProviderImpl::Info()

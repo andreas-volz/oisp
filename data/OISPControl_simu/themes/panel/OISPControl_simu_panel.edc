@@ -807,7 +807,13 @@ collections {
 					     source: "dds_left";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "dds_left";
+               after: "dds_left_tick_emit";
 					  }
+
+            program {
+                name: "dds_left_tick_emit";
+                action: SIGNAL_EMIT "tick" "dds_left";
+            }
 
 				    program {
 			 		     name: "dds_left_up";
@@ -817,20 +823,19 @@ collections {
 							 target: "dds_left";
 					  }
 
-			    program {
-			 		     name: "dds_left_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "dds_left";
-					     action: SIGNAL_EMIT "clicked" "dds_left";
-					  }
-
 		 			  program {
 			 		     name: "dds_right_down";
 					     signal: "mouse,down,1*";
 					     source: "dds_right";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "dds_right";
+               after: "dds_right_tick_emit";
 					  }
+
+            program {
+                name: "dds_right_tick_emit";
+                action: SIGNAL_EMIT "tick" "dds_right";
+            }
 
 				    program {
 			 		     name: "dds_right_up";
@@ -840,20 +845,19 @@ collections {
 							 target: "dds_right";
 					  }
 
-			    program {
-			 		     name: "dds_right_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "dds_right";
-					     action: SIGNAL_EMIT "clicked" "dds_right";
-					  }
-
 		 			  program {
 			 		     name: "dds_button_down";
 					     signal: "mouse,down,1*";
 					     source: "dds_button";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "dds_button";
+               after: "dds_button_down_emit";
 					  }
+
+            program {
+                name: "dds_button_down_emit";
+                action: SIGNAL_EMIT "down" "dds_button";
+            }
 
 				    program {
 			 		     name: "dds_button_up";
@@ -861,14 +865,13 @@ collections {
 					     source: "dds_button";
 							 action: STATE_SET "default" 0.0;
 							 target: "dds_button";
+               after: "dds_button_up_emit";
 					  }
 
-			      program {
-			 		     name: "dds_button_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "dds_button";
-					     action: SIGNAL_EMIT "clicked" "dds_button";
-					  }
+            program {
+                name: "dds_button_up_emit";
+                action: SIGNAL_EMIT "up" "dds_button";
+            }
             /* -DDS */        
 
             /* +button volume */
@@ -878,8 +881,14 @@ collections {
 					     source: "volume_left";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "volume_left";
+               after: "volume_left_tick_emit";
 					  }
 
+            program {
+                name: "volume_left_tick_emit";
+                action: SIGNAL_EMIT "tick" "volume_left";
+            }
+           
 				    program {
 			 		     name: "volume_left_up";
 					     signal: "mouse,up,1";
@@ -888,20 +897,19 @@ collections {
 							 target: "volume_left";
 					  }
 
-			    program {
-			 		     name: "volume_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "volume_left";
-					     action: SIGNAL_EMIT "clicked" "volume_left";
-					  }
-
 		 			  program {
 			 		     name: "volume_right_down";
 					     signal: "mouse,down,1*";
 					     source: "volume_right";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "volume_right";
+               after: "volume_right_tick_emit";
 					  }
+
+            program {
+               name: "volume_right_tick_emit";
+               action: SIGNAL_EMIT "tick" "volume_right";
+            }
 
 				    program {
 			 		     name: "volume_right_up";
@@ -911,20 +919,19 @@ collections {
 							 target: "volume_right";
 					  }
 
-			    program {
-			 		     name: "volume_right_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "volume_right";
-					     action: SIGNAL_EMIT "clicked" "volume_right";
-					  }
-
 		 			  program {
 			 		     name: "volume_button_down";
 					     signal: "mouse,down,1*";
 					     source: "volume_button";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "volume_button";
+               after: "volume_button_down_emit";
 					  }
+
+            program {
+               name: "volume_button_down_emit";
+               action: SIGNAL_EMIT "down" "volume_botton";
+            }
 
 				    program {
 			 		     name: "volume_button_up";
@@ -932,14 +939,13 @@ collections {
 					     source: "volume_button";
 							 action: STATE_SET "default" 0.0;
 							 target: "volume_button";
+               after: "volume_button_up_emit";
 					  }
 
-			      program {
-			 		     name: "volume_button_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "volume_button";
-					     action: SIGNAL_EMIT "clicked" "volume_button";
-					  }
+            program {
+               name: "volume_button_up_emit";
+               action: SIGNAL_EMIT "up" "volume_botton";
+            }
             /* -button volume */
 
             /* +button menu */
@@ -949,7 +955,13 @@ collections {
 					     source: "button_menu_overlay";
 							 action: STATE_SET "pressed" 0.0;
 							 target: "button_menu_overlay";
+               after: "button_menu_down_emit";
 					  }
+
+            program {
+                name: "button_menu_down_emit";
+                action: SIGNAL_EMIT "down" "button_menu";
+            }
 
 				    program {
 			 		     name: "button_menu_up";
@@ -957,14 +969,13 @@ collections {
 					     source: "button_menu_overlay";
 							 action: STATE_SET "default" 0.0;
 							 target: "button_menu_overlay";
+               after:"button_menu_up_emit" ;
 					  }
 
-			      program {
-			 		     name: "button_menu_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "button_menu_overlay";
-					     action: SIGNAL_EMIT "clicked" "button_menu";
-					  }
+            program {
+                name: "button_menu_up_emit";
+                action: SIGNAL_EMIT "up" "button_menu";
+            }
             /* -button menu */
 
             /* +button nav */
@@ -974,7 +985,13 @@ collections {
 					     source: "button_nav_overlay";
 							 action: STATE_SET "pressed" 0.0;
 							 target: "button_nav_overlay";
+               after: "button_nav_down_emit";
 					  }
+
+            program {
+                name: "button_nav_down_emit";
+                action: SIGNAL_EMIT "down" "button_nav";
+            }
 
 				    program {
 			 		     name: "button_nav_up";
@@ -982,14 +999,13 @@ collections {
 					     source: "button_nav_overlay";
 							 action: STATE_SET "default" 0.0;
 							 target: "button_nav_overlay";
+               after: "button_nav_up_emit";
 					  }
 
-			      program {
-			 		     name: "button_nav_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "button_nav_overlay";
-					     action: SIGNAL_EMIT "clicked" "button_nav";
-					  }
+            program {
+                name: "button_nav_up_emit";
+                action: SIGNAL_EMIT "up" "button_nav";
+            }
             /* -button nav */
 
             /* +button media */
@@ -999,7 +1015,13 @@ collections {
 					     source: "button_media_overlay";
 							 action: STATE_SET "pressed" 0.0;
 							 target: "button_media_overlay";
+               after: "button_media_down_emit";
 					  }
+           
+            program {
+                name: "button_media_down_emit";
+                action: SIGNAL_EMIT "down" "button_media";
+            }
 
 				    program {
 			 		     name: "button_media_up";
@@ -1007,14 +1029,13 @@ collections {
 					     source: "button_media_overlay";
 							 action: STATE_SET "default" 0.0;
 							 target: "button_media_overlay";
+               after: "button_media_up_emit";
 					  }
 
-			      program {
-			 		     name: "button_media_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "button_media_overlay";
-					     action: SIGNAL_EMIT "clicked" "button_media";
-					  }
+            program {
+                name: "button_media_up_emit";
+                action: SIGNAL_EMIT "up" "button_media";
+            }
             /* -button media */
 
             /* +button phone */
@@ -1024,7 +1045,13 @@ collections {
 					     source: "button_phone_overlay";
 							 action: STATE_SET "pressed" 0.0;
 							 target: "button_phone_overlay";
+               after: "button_phone_down_emit";
 					  }
+
+            program {
+               name: "button_phone_down_emit";
+               action: SIGNAL_EMIT "down" "button_phone";
+            }
 
 				    program {
 			 		     name: "button_phone_up";
@@ -1032,14 +1059,13 @@ collections {
 					     source: "button_phone_overlay";
 							 action: STATE_SET "default" 0.0;
 							 target: "button_phone_overlay";
+               after: "button_phone_up_emit";
 					  }
 
-			      program {
-			 		     name: "button_phone_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "button_phone_overlay";
-					     action: SIGNAL_EMIT "clicked" "button_phone";
-					  }
+            program {
+                name: "button_phone_up_emit";
+                action: SIGNAL_EMIT "up" "button_phone";
+            }
             /* -button phone */
 
             /* +button return */
@@ -1049,7 +1075,13 @@ collections {
 					     source: "button_return_overlay";
 							 action: STATE_SET "pressed" 0.0;
 							 target: "button_return_overlay";
+               after: "button_return_down_emit";
 					  }
+
+            program {
+               name: "button_return_down_emit";
+               action: SIGNAL_EMIT "down" "button_return";
+            }
 
 				    program {
 			 		     name: "button_return_up";
@@ -1057,14 +1089,13 @@ collections {
 					     source: "button_return_overlay";
 							 action: STATE_SET "default" 0.0;
 							 target: "button_return_overlay";
+               after: "button_return_up_emit";
 					  }
 
-			      program {
-			 		     name: "button_return_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "button_return_overlay";
-					     action: SIGNAL_EMIT "clicked" "button_return";
-					  }
+            program {
+               name: "button_return_up_emit";
+               action: SIGNAL_EMIT "up" "button_return";
+            }
             /* -button return */
 
             /* +cross axis left */
@@ -1074,7 +1105,13 @@ collections {
 					     source: "cross_left_press_mask";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "cross_arrow_left";
+               after: "axis_x_min_emit";
 					  }
+
+            program {
+               name: "axis_x_min_emit";
+               action: SIGNAL_EMIT "min" "axis_x";
+            }
 
 				    program {
 			 		     name: "cross_left_up";
@@ -1082,14 +1119,13 @@ collections {
 					     source: "cross_left_press_mask";
 							 action: STATE_SET "default" 0.0;
 							 target: "cross_arrow_left";
+               after: "axis_x_zero_emit";
 					  }
-
-			      program {
-			 		     name: "cross_left_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "cross_left_press_mask";
-					     action: SIGNAL_EMIT "clicked" "cross_left";
-					  }
+           
+            program {
+               name: "axis_x_zero_emit";
+               action: SIGNAL_EMIT "zero" "axis_x";
+            }
             /* -cross axis left */
 
             /* +cross axis right */
@@ -1099,7 +1135,13 @@ collections {
 					     source: "cross_right_press_mask";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "cross_arrow_right";
+               after: "axis_x_max_emit";
 					  }
+
+            program {
+               name: "axis_x_max_emit";
+               action: SIGNAL_EMIT "max" "axis_x";
+            }
 
 				    program {
 			 		     name: "cross_right_up";
@@ -1107,13 +1149,7 @@ collections {
 					     source: "cross_right_press_mask";
 							 action: STATE_SET "default" 0.0;
 							 target: "cross_arrow_right";
-					  }
-
-			      program {
-			 		     name: "cross_right_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "cross_right_press_mask";
-					     action: SIGNAL_EMIT "clicked" "cross_right";
+               after: "axis_x_zero_emit";
 					  }
             /* -cross axis right */
 
@@ -1124,7 +1160,13 @@ collections {
 					     source: "cross_up_press_mask";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "cross_arrow_up";
+               after: "axis_y_min_emit";
 					  }
+
+            program {
+               name: "axis_y_min_emit";
+               action: SIGNAL_EMIT "min" "axis_y";
+            }
 
 				    program {
 			 		     name: "cross_up_up";
@@ -1132,14 +1174,13 @@ collections {
 					     source: "cross_up_press_mask";
 							 action: STATE_SET "default" 0.0;
 							 target: "cross_arrow_up";
+               after: "axis_y_zero_emit";
 					  }
 
-			      program {
-			 		     name: "cross_up_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "cross_up_press_mask";
-					     action: SIGNAL_EMIT "clicked" "cross_up";
-					  }
+            program {
+               name: "axis_y_zero_emit";
+               action: SIGNAL_EMIT "zero" "axis_y";
+            }
             /* -cross axis up */
 
             /* +cross axis down */
@@ -1149,7 +1190,13 @@ collections {
 					     source: "cross_down_press_mask";
 							 action: STATE_SET "highlight" 0.0;
 							 target: "cross_arrow_down";
+               after: "axis_y_max_emit";
 					  }
+
+            program {
+               name: "axis_y_max_emit";
+               action: SIGNAL_EMIT "max" "axis_y";
+            }
 
 				    program {
 			 		     name: "cross_down_up";
@@ -1157,13 +1204,7 @@ collections {
 					     source: "cross_down_press_mask";
 							 action: STATE_SET "default" 0.0;
 							 target: "cross_arrow_down";
-					  }
-
-			      program {
-			 		     name: "cross_down_clicked";
-					     signal: "mouse,clicked,1";
-					     source: "cross_down_press_mask";
-					     action: SIGNAL_EMIT "clicked" "cross_down";
+               after: "axis_y_zero_emit";
 					  }
             /* -cross axis down */
 				 }

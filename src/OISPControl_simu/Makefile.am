@@ -9,7 +9,9 @@ OISPControl_simu_SOURCES = \
 	FileNotFoundException.cpp \
 	FileNotFoundException.h \
 	OICFControlListenerProviderImpl.cpp \
-	OICFControlListenerProviderImpl.h 
+	OICFControlListenerProviderImpl.h \
+	Simulation.cpp \
+	Simulation.h 
 
 OISPControl_simu_LDADD = \
         $(PROFILING_LIBS) \
