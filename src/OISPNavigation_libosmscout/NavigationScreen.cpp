@@ -120,12 +120,10 @@ bool NavigationScreen::drawerTask(Ecorexx::Timer &timer)
 
   // this code places car cursor simply in the middle.
   // TODO: write some code to place cursor everywhere on the screen and adjust screen GPS coord
-  if (mMapCanvas.GeoToPixel(mLon, mLat, x, y))
-  {
-    x -= (mCarPosSize.width() / 2);
-    y -= (mCarPosSize.height() / 2);
-    mCarPosEdje.move(Eflxx::Point((int)x, (int)y));
-  }
+  mMapCanvas.GeoToPixel(mLon, mLat, x, y);
+  x -= (mCarPosSize.width() / 2);
+  y -= (mCarPosSize.height() / 2);
+  mCarPosEdje.move(Eflxx::Point((int)x, (int)y));
 
   if (mMapMode == CrossCursor)
   {

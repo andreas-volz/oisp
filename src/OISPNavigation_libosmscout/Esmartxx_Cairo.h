@@ -25,6 +25,8 @@ public:
 
   virtual ~Cairo();
 
+   
+
 public:
 
   cairo_surface_t *getSurface();
@@ -35,6 +37,9 @@ public:
 
   // TODO: Redesign needed?
   void setDirty();
+
+  Eflxx::Size mSize;
+  Eflxx::Point mPos;
 };
 
 } // end namespace Esmartxx

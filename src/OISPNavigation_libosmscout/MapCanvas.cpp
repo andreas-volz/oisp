@@ -13,7 +13,7 @@
 #include "util.h"
 #include "Vector2.h"
 #include "Preferences.h"
-#include "MemoryUtil.h"
+//#include "MemoryUtil.h"
 
 #ifdef PROFILING
 // StopClock
@@ -23,13 +23,19 @@
 using namespace std;
 using namespace osmscout;
 
+
+
 MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   Esmartxx::Cairo(canvas, size, true),
-  mDatabase(mDatabaseParameter),
-  mRouter(mRouterParameter),
+  //mMapFolder(string(PACKAGE_DATA_DIR) +  "/osmscout/map/current/"),
+  mMapFolder("/home/andreas/.osmscout/map/current"),
+  mDatabase(new Database(mDatabaseParameter)),
+  //mRouter(new RoutingService(mDatabase, mRouterParameter, mMapFolder)),
   mStyleConfig(NULL),
+  mMapService(new MapService(mDatabase)),
+  mPainter(NULL),  
   mCairoSurface(NULL),
-  mCairo(NULL),
+  mCairo(NULL),  
   mSize(size)
 {
   // this sets the widget itsef to visible
@@ -38,10 +44,6 @@ MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   createSurface();
 
   initOSMScout();
-
-  // activate debug
-  mDatabaseParameter.SetDebugPerformance(true);
-  mParameter.SetDebugPerformance(true);
 
   // TODO: optimize add length of mTypeNames
   mStreetTypeNames.push_back("highway_motorway");
@@ -65,57 +67,85 @@ MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
 MapCanvas::~MapCanvas()
 {
   destroySurface();
-  free(mStyleConfig);
+
+  if (mPainter != NULL) {
+    delete mPainter;
+  }
 }
 
 void MapCanvas::createSurface()
 {
+  //cairo_format_t image_format;
+
+  //image_format = CAIRO_FORMAT_ARGB32;
+
+  //mCairoSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, mSize.width(), mSize.height());
+
   mCairoSurface = getSurface();
   assert(mCairoSurface);
 
   mCairo = cairo_create(mCairoSurface);
   assert(mCairo);
+
+// Clear background as white
+   //cairo_set_source_rgba(mCairo, 1, 1, 1, 1);
+   //cairo_paint(mCairo);
+  
 }
 
 void MapCanvas::destroySurface()
 {
+  //cairo_surface_destroy(mCairoSurface);
   cairo_destroy(mCairo);
-
-  // TODO: correct cleanup of osmscout needed
 }
 
 void MapCanvas::initOSMScout()
 {
+  std::string style(mMapFolder + "/standard.oss");
+	
   Preferences &preferences = Preferences::instance ();
-  std::string map (preferences.getNaviMapFolder());
-  std::string style(map + "/standard.oss");
+  //std::string map (preferences.getNaviMapFolder());
+  
 
-  if (!mDatabase.Open(map.c_str(), &MapCanvas::createHash))
+  if (!mDatabase->Open(mMapFolder))
   {
-    std::cerr << "Cannot open database: " << map << std::endl;
+    std::cerr << "Cannot open database: " << mMapFolder << std::endl;
     exit(1);
     // TODO: throw Exception
   }
 
-  mStyleConfig = new StyleConfig(mDatabase.GetTypeConfig());  // TODO: smartptr
+  osmscout::TypeConfigRef typeConfig = mDatabase->GetTypeConfig();
 
-  if (!LoadStyleConfig(style.c_str(), *mStyleConfig))
+  if (!typeConfig) {
+    return;
+  }
+  
+  osmscout::StyleConfigRef newStyleConfig=std::make_shared<osmscout::StyleConfig>(typeConfig);
+
+
+  if (!newStyleConfig->Load(style))
   {
     std::cerr << "Cannot open style: " << style << std::endl;
     // TODO: throw Exception
   }
 
-  if (!mRouter.Open(map.c_str()/*, &MapCanvas::createHash*/))
+  mStyleConfig = newStyleConfig;
+
+  mPainter = new MapPainterCairo(mStyleConfig);
+  
+  
+#if 0
+  if (!mRouter->Open(/*map.c_str(), &MapCanvas::createHash*/))
   {
     std::cerr << "Cannot open routing" << std::endl;
     exit(1);
     // TODO: throw Exception
   }
-
-  osmscout::TypeId                    type;
+#endif
+ /* osmscout::TypeId                    type;
   osmscout::TypeConfig                *typeConfig=mRouter.GetTypeConfig();
   
-  mRoutingProfile.SetVehicleMaxSpeed(160.0);
+  mRoutingProfile->SetVehicleMaxSpeed(160.0);
 
   type=typeConfig->GetWayTypeId("highway_motorway");
   assert(type!=osmscout::typeIgnore);
@@ -171,7 +201,7 @@ void MapCanvas::initOSMScout()
 
   type=typeConfig->GetWayTypeId("highway_service");
   assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,30.0);
+  mRoutingProfile.AddType(type,30.0);*/
 
 }
 
@@ -211,7 +241,7 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
   int limit = 1; // max number of results
   bool startWith = false;
   bool found = false;
-
+#if 0 // => TBD
   std::list <osmscout::AdminRegion> regions;
 
   if (mDatabase.GetMatchingAdminRegions(city, regions, limit, limitReached, startWith))
@@ -265,19 +295,20 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
       }
     }
   }
-
+#endif
   return found;
 }
 
 void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::WayRef &wayTarget)
 {
-  calcAndDrawRoute(wayStart, (*wayStart->nodes.begin()), wayTarget);
+  // => TBD
+  //calcAndDrawRoute(wayStart, (*wayStart->nodes.begin()), wayTarget);
 }
 
 void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wayStartPoint, osmscout::WayRef &wayTarget)
 {
   RouteData route;
-
+#if 0 // => TBD
   cout << "Route from (way/node): " << wayStart->GetId() << "/" << (*wayStart->nodes.begin()).GetId() << endl;
   cout << "Route to (way/node): " << wayTarget->GetId() << "/" << (*wayTarget->nodes.begin()).GetId() << endl;
 
@@ -300,11 +331,12 @@ void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wa
 
   // show description
   //printRouteList(route);
+#endif
 }
 
-bool MapCanvas::GeoToPixel(double lon, double lat, double &x, double &y)
+void MapCanvas::GeoToPixel(double lon, double lat, double &x, double &y)
 {
-  return mProjection.GeoToPixel(lon, lat, x, y);
+  mProjection.GeoToPixel(lon, lat, x, y);
 }
 
 bool MapCanvas::PixelToGeo(double x, double y, double &lon, double &lat)
@@ -316,11 +348,32 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
 {
   std::string output;
   bool writePNG = false;
+  
+  static const double DPI=96.0;
+  
 
+
+  osmscout::MapParameter        drawParameter;
+  osmscout::AreaSearchParameter searchParameter;
+  
+  
+
+  
   cout << "drawing with: lat=" << lat << " lon=" << lon << " zoom=" << zoom << endl;
 
-  mProjection.Set(lon, lat, zoom, mSize.width(), mSize.height());
+  mProjection.Set(lon, lat, osmscout::Magnification(zoom), DPI, mSize.width(), mSize.height());
 
+  std::list<osmscout::TileRef> tiles;
+
+  
+  mMapService->LookupTiles(mProjection, tiles);
+  if(!mMapService->LoadMissingTileData(searchParameter, *mStyleConfig, tiles))
+  {
+    cerr << "*** Loading of data has error or was interrupted" << endl;
+  }
+  mMapService->ConvertTilesToMapData(tiles, mMapData);
+
+#if 0 
   osmscout::TypeSet nodeTypes;
   std::vector<osmscout::TypeSet> wayTypes;
   osmscout::TypeSet areaTypes;
@@ -351,24 +404,32 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
                        mMapData.areas,
                        mMapData.relationWays,
                        mMapData.relationAreas);
+#endif
 
-  if (mPainter.DrawMap(*mStyleConfig,
-                       mProjection,
-                       mParameter,
+  
+  if (mPainter->DrawMap(mProjection,
+                       drawParameter,
                        mMapData,
                        mCairo))
   {
     if (writePNG)
     {
       static int i = 0;
-      ++i;
+      
       if (cairo_surface_write_to_png(mCairoSurface, (toString(i + 1) + ".png").c_str()) != CAIRO_STATUS_SUCCESS)
       {
         std::cerr << "Cannot write PNG" << std::endl;
       }
+      ++i;
     }
   }
 
+  //cairo_surface_flush(mCairoSurface);
+
+  //unsigned char *imageData = cairo_image_surface_get_data(cairo_get_target(mCairo));
+  
+  //setData(imageData);
+  
   setDirty();
 }
 
@@ -417,9 +478,11 @@ Glib::ustring MapCanvas::calcNextValidCharacters(const std::list <osmscout::Loca
 
 bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, double lonRight, const std::list<std::string> &typeNames, osmscout::WayRef &foundWay, osmscout::Point &foundWayPoint)
 {
+  bool ret = false;
+#if 0 // => TBD
   std::string map;
   TypeSet types;
-  bool ret = false;
+  
 
   double latMedium = (latTop + latBottom) / 2.0;
   double lonMedium = (lonLeft + lonRight) / 2.0;
@@ -601,6 +664,7 @@ bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, doubl
     return true;
   }*/
 
+#endif
   return ret;
 }
 
@@ -608,7 +672,8 @@ void MapCanvas::printRouteList(osmscout::RouteData &route)
 {
   osmscout::RouteDescription description;
 
-  mRouter.TransformRouteDataToRouteDescription(route, description);
+  // TBD
+  //mRouter.TransformRouteDataToRouteDescription(route, description);
 
 /*  for (std::list <osmscout::RouteDescription::RouteStep>::const_iterator step = description.Steps().begin();
        step != description.Steps().end();

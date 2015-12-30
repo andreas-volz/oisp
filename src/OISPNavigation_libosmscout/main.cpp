@@ -8,7 +8,6 @@
 /* libosmscout */
 #include <osmscout/Database.h>
 #include <osmscout/MapPainter.h>
-#include <osmscout/StyleConfigLoader.h>
 
 /* STD */
 #include <stdio.h>
@@ -70,6 +69,7 @@ struct Arg: public option::Arg
   static option::ArgStatus Unknown(const option::Option& option, bool msg)
   {
     if (msg) printError("Unknown option '", option, "'\n");
+    
     return option::ARG_ILLEGAL;
   }
 
@@ -148,7 +148,7 @@ int parseOptions(int argc, char **argv)
 
   if(options[NAVIMAP].count() > 0)
   {
-    preferences.setNaviMapFolder(options[NAVIMAP].arg);
+    //preferences.setNaviMapFolder(options[NAVIMAP].arg);
   }
  
   for(option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())

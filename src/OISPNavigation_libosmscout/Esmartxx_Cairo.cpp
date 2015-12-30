@@ -14,12 +14,14 @@ namespace Esmartxx
 
 Cairo::Cairo(Evasxx::Canvas &canvas, const Eflxx::Size &size, bool alpha)
 {
+  mSize = size;
   o = esmart_image_cairo_new(canvas.obj(), size.width(), size.height(), alpha);
   init();
 }
 
 Cairo::Cairo(Evasxx::Canvas &canvas, const Eflxx::Point &pos, const Eflxx::Size &size, bool alpha)
 {
+  mPos = pos;
   o = esmart_image_cairo_new(canvas.obj(), size.width(), size.height(), alpha);
   init();
 
@@ -54,7 +56,8 @@ void Cairo::setAutoFill(bool enable)
 
 void Cairo::setDirty()
 {
-  evas_object_image_pixels_dirty_set(o, 1);
+  //evas_object_image_pixels_dirty_set(o, 1);
+  evas_object_image_data_update_add(o, mPos.x(), mPos.y(), mSize.width(), mSize.height());
 }
 
 } // end namespace Esmartxx

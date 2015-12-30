@@ -34,7 +34,7 @@ void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
 
   /* Create the main window, a window with an embedded canvas */
   mw = new Ecorexx::EvasWindowSoftwareX11(mSize);
-  mw->setAlpha(true);
+  //mw->setAlpha(true);
 
   if (preferences.getDesktopLayer())
   {

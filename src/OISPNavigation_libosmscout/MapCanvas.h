@@ -2,10 +2,10 @@
 #define MAP_CANVAS_H
 
 /* libosmscout */
+#include <osmscout/RoutingService.h>
 #include <osmscout/Database.h>
-#include <osmscout/Router.h>
+#include <osmscout/MapService.h>
 #include <osmscout/MapPainterCairo.h>
-#include <osmscout/StyleConfigLoader.h>
 
 
 /* Eflxx */
@@ -23,7 +23,7 @@ public:
   MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size);
   ~MapCanvas();
 
-  bool GeoToPixel(double lon, double lat, double &x, double &y);
+  void GeoToPixel(double lon, double lat, double &x, double &y);
   bool PixelToGeo(double x, double y, double &lon, double &lat);
 
   void drawMap(double lon, double lat, double zoom);
@@ -31,18 +31,20 @@ public:
   void startRouteTo(double lat, double lon, const std::string &city, const std::string &street);
 
 private:
+  std::string mMapFolder;
   osmscout::DatabaseParameter mDatabaseParameter;
   osmscout::RouterParameter mRouterParameter;
-  osmscout::Database mDatabase;
-  osmscout::Router mRouter;
-  osmscout::StyleConfig *mStyleConfig;
-  osmscout::MapPainterCairo mPainter;
+  osmscout::DatabaseRef mDatabase;
+  osmscout::RoutingServiceRef mRouter;
+  osmscout::StyleConfigRef mStyleConfig;
+  osmscout::MapServiceRef mMapService;
+  osmscout::MercatorProjection  mProjection;
+
+  osmscout::FastestPathRoutingProfileRef mRoutingProfile;
+
+  osmscout::MapPainterCairo *mPainter;
   osmscout::MapData mMapData;
-  osmscout::MercatorProjection mProjection;
-  osmscout::MapParameter mParameter;
-  osmscout::AreaSearchParameter mAreaSearchParameter;
-  osmscout::FastestPathRoutingProfile mRoutingProfile;
-    
+  
   cairo_surface_t *mCairoSurface;
   cairo_t *mCairo;
 
@@ -73,6 +75,8 @@ private:
   Glib::Mutex mMutexPosition;
 
   std::list<std::string> mStreetTypeNames;
+
+  
 };
 
 #endif // MAP_CANVAS_H
