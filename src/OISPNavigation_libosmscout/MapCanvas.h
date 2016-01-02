@@ -6,7 +6,7 @@
 #include <osmscout/Database.h>
 #include <osmscout/MapService.h>
 #include <osmscout/MapPainterCairo.h>
-
+#include <osmscout/LocationService.h>
 
 /* Eflxx */
 #include "Esmartxx_Cairo.h"
@@ -35,12 +35,12 @@ private:
   osmscout::DatabaseParameter mDatabaseParameter;
   osmscout::RouterParameter mRouterParameter;
   osmscout::DatabaseRef mDatabase;
-  osmscout::RoutingServiceRef mRouter;
+  //osmscout::FastestPathRoutingProfile mRoutingProfile;
+  //osmscout::RoutingServiceRef mRouter;
   osmscout::StyleConfigRef mStyleConfig;
+  osmscout::LocationServiceRef mLocationService;
   osmscout::MapServiceRef mMapService;
   osmscout::MercatorProjection  mProjection;
-
-  osmscout::FastestPathRoutingProfileRef mRoutingProfile;
 
   osmscout::MapPainterCairo *mPainter;
   osmscout::MapData mMapData;
@@ -50,16 +50,14 @@ private:
 
   void initOSMScout();
 
-  void calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::WayRef &wayTarget);
-
-  void calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wayStartPoint, osmscout::WayRef &wayTarget);
-
   bool searchWay(double latTop, double lonLeft, double latBottom, double lonRight, const std::list<std::string> &typeNames, osmscout::WayRef &foundWay, osmscout::Point &foundWayPoint);
 
   bool searchWay(const std::string &city, const std::string &street, osmscout::WayRef &foundWay);
 
-  void printRouteList(osmscout::RouteData &route);
+  void startRouting(double startLat, double startLon, double targetLat, double targetLon);
 
+  void GetCarSpeedTable(std::map<std::string,double>& map);
+  
   void createSurface();
 
   void destroySurface();

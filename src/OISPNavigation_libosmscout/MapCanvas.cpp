@@ -29,10 +29,11 @@ MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   Esmartxx::Cairo(canvas, size, true),
   //mMapFolder(string(PACKAGE_DATA_DIR) +  "/osmscout/map/current/"),
   mMapFolder("/home/andreas/.osmscout/map/current"),
-  mDatabase(new Database(mDatabaseParameter)),
-  //mRouter(new RoutingService(mDatabase, mRouterParameter, mMapFolder)),
+  mDatabase(std::make_shared<osmscout::Database>(mDatabaseParameter)),
+  //mRoutingProfile(mDatabase->GetTypeConfig()),
   mStyleConfig(NULL),
-  mMapService(new MapService(mDatabase)),
+  mLocationService(std::make_shared<osmscout::LocationService>(mDatabase)),
+  mMapService(std::make_shared<osmscout::MapService>(mDatabase)),
   mPainter(NULL),  
   mCairoSurface(NULL),
   mCairo(NULL),  
@@ -75,27 +76,15 @@ MapCanvas::~MapCanvas()
 
 void MapCanvas::createSurface()
 {
-  //cairo_format_t image_format;
-
-  //image_format = CAIRO_FORMAT_ARGB32;
-
-  //mCairoSurface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, mSize.width(), mSize.height());
-
   mCairoSurface = getSurface();
   assert(mCairoSurface);
 
   mCairo = cairo_create(mCairoSurface);
   assert(mCairo);
-
-// Clear background as white
-   //cairo_set_source_rgba(mCairo, 1, 1, 1, 1);
-   //cairo_paint(mCairo);
-  
 }
 
 void MapCanvas::destroySurface()
 {
-  //cairo_surface_destroy(mCairoSurface);
   cairo_destroy(mCairo);
 }
 
@@ -126,111 +115,74 @@ void MapCanvas::initOSMScout()
   if (!newStyleConfig->Load(style))
   {
     std::cerr << "Cannot open style: " << style << std::endl;
+    exit(1);
     // TODO: throw Exception
   }
 
   mStyleConfig = newStyleConfig;
 
   mPainter = new MapPainterCairo(mStyleConfig);
+
+  /*mRouter = std::make_shared<osmscout::RoutingService>(mDatabase,
+                                                       mRouterParameter,
+                                                       osmscout::RoutingService::DEFAULT_FILENAME_BASE);
+
   
-  
-#if 0
-  if (!mRouter->Open(/*map.c_str(), &MapCanvas::createHash*/))
+  if (!mRouter->Open())
   {
     std::cerr << "Cannot open routing" << std::endl;
     exit(1);
     // TODO: throw Exception
-  }
-#endif
- /* osmscout::TypeId                    type;
-  osmscout::TypeConfig                *typeConfig=mRouter.GetTypeConfig();
-  
-  mRoutingProfile->SetVehicleMaxSpeed(160.0);
+  }*/
 
-  type=typeConfig->GetWayTypeId("highway_motorway");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,110.0);
+}
 
-  type=typeConfig->GetWayTypeId("highway_motorway_link");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,60.0);
-
-  type=typeConfig->GetWayTypeId("highway_trunk");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,70.0);
-
-  type=typeConfig->GetWayTypeId("highway_trunk_link");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,70.0);
-
-  type=typeConfig->GetWayTypeId("highway_primary");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,70.0);
-
-  type=typeConfig->GetWayTypeId("highway_primary_link");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,60.0);
-
-  type=typeConfig->GetWayTypeId("highway_secondary");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,60.0);
-
-  type=typeConfig->GetWayTypeId("highway_secondary_link");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,50.0);
-
-  type=typeConfig->GetWayTypeId("highway_tertiary");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,55.0);
-
-  type=typeConfig->GetWayTypeId("highway_unclassified");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,50.0);
-
-  type=typeConfig->GetWayTypeId("highway_road");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,50.0);
-
-  type=typeConfig->GetWayTypeId("highway_residential");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,40.0);
-
-  type=typeConfig->GetWayTypeId("highway_living_street");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,10.0);
-
-  type=typeConfig->GetWayTypeId("highway_service");
-  assert(type!=osmscout::typeIgnore);
-  mRoutingProfile.AddType(type,30.0);*/
-
+void MapCanvas::GetCarSpeedTable(std::map<std::string,double>& map)
+{
+  map["highway_motorway"]=110.0;
+  map["highway_motorway_trunk"]=100.0;
+  map["highway_motorway_primary"]=70.0;
+  map["highway_motorway_link"]=60.0;
+  map["highway_motorway_junction"]=60.0;
+  map["highway_trunk"]=100.0;
+  map["highway_trunk_link"]=60.0;
+  map["highway_primary"]=70.0;
+  map["highway_primary_link"]=60.0;
+  map["highway_secondary"]=60.0;
+  map["highway_secondary_link"]=50.0;
+  map["highway_tertiary_link"]=55.0;
+  map["highway_tertiary"]=55.0;
+  map["highway_unclassified"]=50.0;
+  map["highway_road"]=50.0;
+  map["highway_residential"]=40.0;
+  map["highway_roundabout"]=40.0;
+  map["highway_living_street"]=10.0;
+  map["highway_service"]=30.0;
 }
 
 void MapCanvas::startRouteTo(double lat, double lon, const std::string &city, const std::string &street)
 {
-  osmscout::WayRef currentWay;
-  osmscout::Point foundWayPoint;
-  bool wayWGSFound = searchWay(lat, lon, lat, lon, mStreetTypeNames, currentWay, foundWayPoint);
-  if (!wayWGSFound)
-  {
-    cerr << "no start way found!" << endl;
-  }
+  cout << "startRouteTo: lat=" << lat << " lon=" << lon << " city=" << city << " street=" << street << endl;
 
-  osmscout::WayRef startWay;
-  osmscout::WayRef targetWay;
-
-  //searchWay ("Brachttal", "Gärtnerweg", startWay);
-  //searchWay ("Langen (Hessen)", "Robert-Bosch-Straße", targetWay);
-
-  bool wayAdrFound = searchWay(city, street, targetWay);
+  osmscout::WayRef way;
+  bool wayAdrFound = searchWay(city, street, way);
   if (!wayAdrFound)
   {
     cerr << "no target way found!" << endl;
   }
+  
+  osmscout::ObjectFileRef targetObject;
+  size_t                  targetNodeIndex;
+  GeoCoord center;
 
-  if (wayWGSFound && wayAdrFound)
+  if(!way->GetCenter(center))
   {
-    calcAndDrawRoute(currentWay, foundWayPoint, targetWay);
+    exit(1);
   }
+
+  cout << "target: lat=" << center.GetLat() << " lon=" << center.GetLon() << endl;
+  
+  startRouting(lat, lon, center.GetLat(), center.GetLon());
 }
 
 bool MapCanvas::searchWay(const std::string &city, const std::string &street, osmscout::WayRef &foundWay)
@@ -241,97 +193,78 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
   int limit = 1; // max number of results
   bool startWith = false;
   bool found = false;
-#if 0 // => TBD
-  std::list <osmscout::AdminRegion> regions;
+  string searchPattern = city + " " + street;
 
-  if (mDatabase.GetMatchingAdminRegions(city, regions, limit, limitReached, startWith))
+  osmscout::LocationSearch                                search;
+  osmscout::LocationSearchResult                          searchResult;
+  std::map<osmscout::FileOffset,osmscout::AdminRegionRef> adminRegionMap;
+  std::string                                             path;
+  osmscout::WayRef way;
+  
+  search.limit=50;
+
+  if (!mLocationService->InitializeLocationSearchEntries(searchPattern,
+                                                        search)) {
+    std::cerr << "Error while parsing search string" << std::endl;
+    return false;
+  }
+
+  if (!mLocationService->SearchForLocations(search,
+                                           searchResult)) {
+    std::cerr << "Error while searching for location" << std::endl;
+    found = false;
+  }
+  else
   {
-    if(regions.size() >= 1)
+    found = true;
+  }
+  
+  for (const auto &entry : searchResult.results)
+  {
+    if (entry.adminRegion &&
+        entry.location &&
+        entry.address)
     {
-      const osmscout::AdminRegion &region = *(regions.begin());
+      cout << "Location/Address" << endl;
 
-      cout << "admin region:" << region.name << endl;
+      break; // ==> as test break after first result and use it => FIXME
+    }
+    else if (entry.adminRegion &&
+             entry.location)
+    {
+      cout << "Address: " << entry.location->name << endl;
 
-      /// search street -->
-      if (mDatabase.GetMatchingLocations(region, street, streets,
-                                         limit, limitReached, true))
+      for (const auto &object : entry.location->objects)
       {
-        osmscout::WayRef wayReference;
-
-        cout << "streets.size(): " << streets.size() << endl;
-        fflush(stdout);
-        
-        // search way reference
-        for (std::list<ObjectFileRef>::const_iterator or_it = (*streets.begin()).references.begin();
-             or_it != (*streets.begin()).references.end();
-             ++or_it)
+        if (mDatabase->GetWayByOffset(object.GetFileOffset(),
+                                way))
         {
-          const osmscout::ObjectFileRef &reference = *or_it;
+          GeoCoord center;
 
-          if (reference.GetType() == osmscout::refNode)
+          if(!way->GetCenter(center))
           {
-            // ignore for way finding
+            exit(1);
           }
-          else if (reference.GetType() == osmscout::refWay)
-          {
-            if (mDatabase.GetWayByOffset(reference.GetFileOffset(), wayReference))
-            {
-              cout << "Found Way: " << wayReference->GetName() << endl;
 
-              foundWay = wayReference;
-              found = true;
-              break; // leave for-loop
-            }
-          }
-          else if (reference.GetType() == osmscout::refRelation)
-          {
-            // ignore for way finding
-          }
-          else
-          {
-            assert(false);
-          }
+          cout << "target: lat=" << center.GetLat() << " lon=" << center.GetLon() << endl;
+          
+          foundWay = way;
+          break; // FIXME: break after first hit 
         }
       }
+    }  
+    else if (entry.adminRegion &&
+             entry.poi)
+    {
+      cout << "POI" << endl;
+    }
+    else if (entry.adminRegion)
+    {
+      cout << "AdminRegion" << endl;
     }
   }
-#endif
+
   return found;
-}
-
-void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::WayRef &wayTarget)
-{
-  // => TBD
-  //calcAndDrawRoute(wayStart, (*wayStart->nodes.begin()), wayTarget);
-}
-
-void MapCanvas::calcAndDrawRoute(osmscout::WayRef &wayStart, osmscout::Point &wayStartPoint, osmscout::WayRef &wayTarget)
-{
-  RouteData route;
-#if 0 // => TBD
-  cout << "Route from (way/node): " << wayStart->GetId() << "/" << (*wayStart->nodes.begin()).GetId() << endl;
-  cout << "Route to (way/node): " << wayTarget->GetId() << "/" << (*wayTarget->nodes.begin()).GetId() << endl;
-
-#ifdef PROFILING
-  StopClock sc;
-#endif
-  mRouter.CalculateRoute(mRoutingProfile, wayStart->GetId(), wayStartPoint.GetId(), wayTarget->GetId(), (*wayTarget->nodes.begin()).GetId(), route);
-#ifdef PROFILING
-  cout << "CalculateRoute needs " << sc.getElapsedTime(StopClock::TIME_UNIT_SECONDS) << " sec" << endl;
-#endif
-  
-  // draw the route in map
-  Way routingWay;
-  mRouter.TransformRouteDataToWay(route, routingWay);
-
-  // clear all POIs before (FIXME should only clear current route)
-  //delete_stl_container(mMapData.poiWays);
-
-  mMapData.poiWays.push_back(new osmscout::Way(routingWay));
-
-  // show description
-  //printRouteList(route);
-#endif
 }
 
 void MapCanvas::GeoToPixel(double lon, double lat, double &x, double &y)
@@ -351,14 +284,9 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
   
   static const double DPI=96.0;
   
-
-
   osmscout::MapParameter        drawParameter;
   osmscout::AreaSearchParameter searchParameter;
-  
-  
-
-  
+    
   cout << "drawing with: lat=" << lat << " lon=" << lon << " zoom=" << zoom << endl;
 
   mProjection.Set(lon, lat, osmscout::Magnification(zoom), DPI, mSize.width(), mSize.height());
@@ -372,39 +300,6 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
     cerr << "*** Loading of data has error or was interrupted" << endl;
   }
   mMapService->ConvertTilesToMapData(tiles, mMapData);
-
-#if 0 
-  osmscout::TypeSet nodeTypes;
-  std::vector<osmscout::TypeSet> wayTypes;
-  osmscout::TypeSet areaTypes;
-
-  mStyleConfig->GetNodeTypesWithMaxMag(mProjection.GetMagnification(), nodeTypes);
-
-  mStyleConfig->GetWayTypesByPrioWithMaxMag(mProjection.GetMagnification(), wayTypes);
-
-  mStyleConfig->GetAreaTypesWithMaxMag(mProjection.GetMagnification(), areaTypes);
-
-
-  mAreaSearchParameter.SetMaximumAreaLevel(zoom);
-  mAreaSearchParameter.SetMaximumNodes(2000);
-  mAreaSearchParameter.SetMaximumWays(2000);
-  mAreaSearchParameter.SetMaximumAreas(std::numeric_limits<size_t>::max());
-
-  mDatabase.GetObjects(nodeTypes,
-                       wayTypes,
-                       areaTypes,
-                       mProjection.GetLonMin(),
-                       mProjection.GetLatMin(),
-                       mProjection.GetLonMax(),
-                       mProjection.GetLatMax(),
-                       mProjection.GetMagnification(),
-                       mAreaSearchParameter,
-                       mMapData.nodes,
-                       mMapData.ways,
-                       mMapData.areas,
-                       mMapData.relationWays,
-                       mMapData.relationAreas);
-#endif
 
   
   if (mPainter->DrawMap(mProjection,
@@ -423,12 +318,6 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
       ++i;
     }
   }
-
-  //cairo_surface_flush(mCairoSurface);
-
-  //unsigned char *imageData = cairo_image_surface_get_data(cairo_get_target(mCairo));
-  
-  //setData(imageData);
   
   setDirty();
 }
@@ -479,304 +368,114 @@ Glib::ustring MapCanvas::calcNextValidCharacters(const std::list <osmscout::Loca
 bool MapCanvas::searchWay(double latTop, double lonLeft, double latBottom, double lonRight, const std::list<std::string> &typeNames, osmscout::WayRef &foundWay, osmscout::Point &foundWayPoint)
 {
   bool ret = false;
-#if 0 // => TBD
-  std::string map;
-  TypeSet types;
-  
-
-  double latMedium = (latTop + latBottom) / 2.0;
-  double lonMedium = (lonLeft + lonRight) / 2.0;
-  double maxDistance = numeric_limits<double>::max();
-
-  Vector2d currentPosVec(latTop, lonLeft);
-
-  std::cout << "- Search area: ";
-  std::cout << "[" << std::min(latTop, latBottom) << "," << std::min(lonLeft, lonRight) << "]";
-  std::cout << "x";
-  std::cout << "[" << std::max(latTop, latBottom) << "," << std::max(lonLeft, lonRight) << "]" << std::endl;
-
-  //types.reserve(typeNames.size() * 3); // Avoid dynamic resize
-
-  for (std::list<std::string>::const_iterator name = typeNames.begin();
-       name != typeNames.end();
-       name++)
-  {
-    osmscout::TypeId nodeType;
-    osmscout::TypeId wayType;
-    osmscout::TypeId areaType;
-
-    nodeType = mDatabase.GetTypeConfig()->GetNodeTypeId(*name);
-    wayType = mDatabase.GetTypeConfig()->GetWayTypeId(*name);
-    areaType = mDatabase.GetTypeConfig()->GetAreaTypeId(*name);
-
-    if (nodeType == osmscout::typeIgnore &&
-        wayType == osmscout::typeIgnore &&
-        areaType == osmscout::typeIgnore)
-    {
-      std::cerr << "Cannot resolve type name '" << *name << "'" << std::endl;
-      continue;
-    }
-
-    std::cout << "- Searching for '" << *name << "' as";
-
-    if (nodeType != osmscout::typeIgnore)
-    {
-      std::cout << " node (" << nodeType << ")";
-
-      types.SetType(nodeType);
-    }
-
-    if (wayType != osmscout::typeIgnore)
-    {
-      std::cout << " way (" << wayType << ")";
-
-      if (wayType != nodeType)
-      {
-        types.SetType(wayType);
-      }
-    }
-
-    if (areaType != osmscout::typeIgnore)
-    {
-      std::cout << " area (" << areaType << ")";
-
-      if (areaType != nodeType && areaType != wayType)
-      {
-        types.SetType(areaType);
-      }
-    }
-
-    std::cout << std::endl;
-  }
-
-  std::vector<osmscout::NodeRef> nodes;
-  std::vector<osmscout::WayRef> ways;
-  std::vector<osmscout::WayRef> areas;
-  std::vector<osmscout::RelationRef> relationWays;
-  std::vector<osmscout::RelationRef> relationAreas;
-  
-  osmscout::TagId nameTagId = mDatabase.GetTypeConfig()->GetTagId("name");
-
-    if (!mDatabase.GetObjects(std::min(lonLeft, lonRight),
-                            std::min(latTop, latBottom),
-                            std::max(lonLeft, lonRight),
-                            std::max(latTop, latBottom),
-                            types,
-                            nodes,
-                            ways,
-                            areas,
-                            relationWays,
-                            relationAreas))
-  {
-    std::cerr << "Cannot load data from database" << std::endl;
-
-    return false;
-  }
-
-  for (std::vector<osmscout::NodeRef>::const_iterator node = nodes.begin();
-       node != nodes.end();
-       node++)
-  {
-    std::string name;
-
-    if (nameTagId != osmscout::tagIgnore)
-    {
-      for (size_t i = 0; i < (*node)->GetTagCount(); i++)
-      {
-        if ((*node)->GetTagKey(i) == nameTagId)
-        {
-          name = (*node)->GetTagValue(i);
-          break;
-        }
-      }
-    }
-
-    std::cout << "+ Node " << (*node)->GetId();
-    std::cout << " " << mDatabase.GetTypeConfig()->GetTypeInfo((*node)->GetType()).GetName();
-    std::cout << " " << name << std::endl;
-  }
-
-  for (std::vector<osmscout::WayRef>::const_iterator way = ways.begin();
-       way != ways.end();
-       way++)
-  {
-    std::cout << "+ Way " << (*way)->GetId();
-    std::cout << " " << mDatabase.GetTypeConfig()->GetTypeInfo((*way)->GetType()).GetName();
-    std::cout << " " << (*way)->GetName();
-    double lat = 0;
-    double lon = 0;
-    (*way)->GetCenter(lat, lon);
-    std::cout << " lat=" << lat << " lon=" << lon << std::endl;
-
-
-    for (std::vector<osmscout::Point>::const_iterator point = (*way)->nodes.begin();
-         point != (*way)->nodes.end();
-         point++)
-    {
-      cout << "-> way node: lat=" << (*point).GetLat() << " lon=" << (*point).GetLon() << endl;
-
-      Vector2d wayNodePosVec((*point).GetLat(), (*point).GetLon());
-
-      double distance = vectorDistance(currentPosVec, wayNodePosVec);
-      cout << "-> distance to car: " << distance << endl;
-
-      if (distance < maxDistance)
-      {
-        foundWay = (*way);
-        foundWayPoint = (*point);
-        maxDistance = distance;
-        ret = true;
-      }
-    }
-  }
-
-  for (std::vector<osmscout::RelationRef>::const_iterator way = relationWays.begin();
-       way != relationWays.end();
-       way++)
-  {
-    std::cout << "+ Way Reference " << (*way)->GetId();
-    std::cout << " " << mDatabase.GetTypeConfig()->GetTypeInfo((*way)->GetType()).GetName();
-    std::cout << " " << (*way)->GetName() << std::endl;
-  }
-
-  for (std::vector<osmscout::WayRef>::const_iterator area = areas.begin();
-       area != areas.end();
-       area++)
-  {
-    std::cout << "+ Area " << (*area)->GetId();
-    std::cout << " " << mDatabase.GetTypeConfig()->GetTypeInfo((*area)->GetType()).GetName();
-    std::cout << " " << (*area)->GetName() << std::endl;
-  }
-
-  for (std::vector<osmscout::RelationRef>::const_iterator area = relationAreas.begin();
-       area != relationAreas.end();
-       area++)
-  {
-    std::cout << "+ Area " << (*area)->GetId();
-    std::cout << " " << mDatabase.GetTypeConfig()->GetTypeInfo((*area)->GetType()).GetName();
-    std::cout << " " << (*area)->GetName() << std::endl;
-  }
-
-  // return by out parameter
-  /*if (ways.size () >= 1)
-  {
-    foundWay = (*ways.begin());
-    return true;
-  }*/
-
-#endif
+  //TBD
   return ret;
 }
 
-void MapCanvas::printRouteList(osmscout::RouteData &route)
+void MapCanvas::startRouting(double startLat, double startLon,
+                            double targetLat, double targetLon) 
 {
-  osmscout::RouteDescription description;
+  std::string                               routerFilenamebase=osmscout::RoutingService::DEFAULT_FILENAME_BASE;
+  osmscout::Vehicle                         vehicle=osmscout::vehicleCar;
+  bool                                      outputGPX=false;
 
-  // TBD
-  //mRouter.TransformRouteDataToRouteDescription(route, description);
+  osmscout::FastestPathRoutingProfile routingProfile(mDatabase->GetTypeConfig());
+  osmscout::RouterParameter           routerParameter;
 
-/*  for (std::list <osmscout::RouteDescription::RouteStep>::const_iterator step = description.Steps().begin();
-       step != description.Steps().end();
-       ++step)
-  {
+  if (!outputGPX) {
+    routerParameter.SetDebugPerformance(true);
+  }
 
-    std::cout << std::fixed << std::setprecision(1);
-    std::cout << step->GetAt() << "km ";
+  osmscout::RoutingServiceRef router=std::make_shared<osmscout::RoutingService>(mDatabase,
+                                                                                routerParameter,
+                                                                                routerFilenamebase);
 
-    if (step->GetAfter() != 0.0)
-    {
-      std::cout << std::fixed << std::setprecision(1);
-      std::cout << step->GetAfter() << "km ";
-    }
-    else
-    {
-      std::cout << "      ";
-    }
+  if (!router->Open()) {
+    std::cerr << "Cannot open routing database" << std::endl;
 
-    switch (step->GetAction())
-    {
-    case osmscout::RouteDescription::start:
-      std::cout << "Start at ";
-      if (!step->GetName().empty())
-      {
-        std::cout << step->GetName();
+    exit(1);
+  }
 
-        if (!step->GetRefName().empty())
-        {
-          std::cout << " (" << step->GetRefName() << ")";
-        }
-      }
-      else
-      {
-        std::cout << step->GetRefName();
-      }
-      break;
-    case osmscout::RouteDescription::drive:
-      std::cout << "drive along ";
-      if (!step->GetName().empty())
-      {
-        std::cout << step->GetName();
+  osmscout::TypeConfigRef             typeConfig=mDatabase->GetTypeConfig();
+  osmscout::RouteData                 data;
+  osmscout::RouteDescription          description;
+  std::map<std::string,double>        carSpeedTable;
 
-        if (!step->GetRefName().empty())
-        {
-          std::cout << " (" << step->GetRefName() << ")";
-        }
-      }
-      else
-      {
-        std::cout << step->GetRefName();
-      }
-      break;
-    case osmscout::RouteDescription::switchRoad:
-      std::cout << "turn into ";
-      if (!step->GetName().empty())
-      {
-        std::cout << step->GetName();
+  switch (vehicle) {
+  case osmscout::vehicleFoot:
+    routingProfile.ParametrizeForFoot(*typeConfig,
+                                      5.0);
+    break;
+  case osmscout::vehicleBicycle:
+    routingProfile.ParametrizeForBicycle(*typeConfig,
+                                         20.0);
+    break;
+  case osmscout::vehicleCar:
+    GetCarSpeedTable(carSpeedTable);
+    routingProfile.ParametrizeForCar(*typeConfig,
+                                     carSpeedTable,
+                                     160.0);
+    break;
+  }
 
-        if (!step->GetRefName().empty())
-        {
-          std::cout << " (" << step->GetRefName() << ")";
-        }
-      }
-      else
-      {
-        std::cout << step->GetRefName();
-      }
-      break;
-    case osmscout::RouteDescription::reachTarget:
-      std::cout << "Arriving at ";
-      if (!step->GetName().empty())
-      {
-        std::cout << step->GetName();
+  osmscout::ObjectFileRef startObject;
+  size_t                  startNodeIndex;
 
-        if (!step->GetRefName().empty())
-        {
-          std::cout << " (" << step->GetRefName() << ")";
-        }
-      }
-      else
-      {
-        std::cout << step->GetRefName();
-      }
-      break;
-    case osmscout::RouteDescription::pass:
-      std::cout << "passing along ";
-      if (!step->GetName().empty())
-      {
-        std::cout << step->GetName();
+  if (!router->GetClosestRoutableNode(startLat,
+                                      startLon,
+                                      vehicle,
+                                      1000,
+                                      startObject,
+                                      startNodeIndex)) {
+    std::cerr << "Error while searching for routing node near start location!" << std::endl;
+    exit(1);
+  }
 
-        if (!step->GetRefName().empty())
-        {
-          std::cout << " (" << step->GetRefName() << ")";
-        }
-      }
-      else
-      {
-        std::cout << step->GetRefName();
-      }
-      break;
-    }
+  if (startObject.Invalid() || startObject.GetType()==osmscout::refNode) {
+    std::cerr << "Cannot find start node for start location!" << std::endl;
+  }
 
-    std::cout << std::endl;
-  }*/
+  osmscout::ObjectFileRef targetObject;
+  size_t                  targetNodeIndex;
+
+  if (!router->GetClosestRoutableNode(targetLat,
+                                      targetLon,
+                                      vehicle,
+                                      1000,
+                                      targetObject,
+                                      targetNodeIndex)) {
+    std::cerr << "Error while searching for routing node near target location!" << std::endl;
+    exit(1);
+  }
+
+  if (targetObject.Invalid() || targetObject.GetType()==osmscout::refNode) {
+    std::cerr << "Cannot find start node for target location!" << std::endl;
+  }
+
+  if (!router->CalculateRoute(routingProfile,
+                              startObject,
+                              startNodeIndex,
+                              targetObject,
+                              targetNodeIndex,
+                              data)) {
+    std::cerr << "There was an error while calculating the route!" << std::endl;
+    router->Close();
+    exit(1);
+  }
+
+  if (data.IsEmpty()) {
+    std::cout << "No Route found!" << std::endl;
+
+    router->Close();
+
+    exit(1);
+  }
+
+  // draw the route in map
+  Way routingWay;
+  router->TransformRouteDataToWay(data, routingWay);
+
+  mMapData.poiWays.clear();
+  mMapData.poiWays.push_back(std::make_shared<osmscout::Way>(routingWay));
 }
+

@@ -169,8 +169,7 @@ esmart_image_cairo_surface_get(Evas_Object *o)
  *  - size: also based on surface size.
  *
  * Remember that any changes to @a cairo_surface will not have effect
- * until evas_object_image_data_update_add() or
- * evas_object_image_pixels_dirty_set() is called.
+ * until evas_object_image_data_update_add() is called.
  *
  * Image fill is set to surface size, so if object is resized, the
  * surface contents will be tiled. If instead you like to have it
