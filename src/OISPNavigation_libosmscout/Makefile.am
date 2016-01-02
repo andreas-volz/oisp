@@ -31,7 +31,8 @@ OISPNavigation_libosmscout_SOURCES = \
 	Vector2.h       \
 	optionparser.h       \
 	Preferences.cpp       \
-	Preferences.h
+	Preferences.h  \
+        Logger.h
 
 OISPNavigation_libosmscout_LDADD =  \
 	$(PROFILING_LIBS)  \
@@ -42,21 +43,11 @@ OISPNavigation_libosmscout_LDADD =  \
 	$(SIGC_LIBS)  \
 	$(GLIBMM_LIBS)  \
 	$(EFL_LIBS)  \
-	$(OICFPROVIDER_LIBS)  
+	$(OICFPROVIDER_LIBS) \
+        $(LOG4CXX_LIBS)
+
 
 OISPNavigation_libosmscout_CXXFLAGS =  \
-	$(PROFILING_CFLAGS)  \
-	$(DBUSMM_CFLAGS)  \
-	$(DBUSMMECORE_CFLAGS)  \
-	$(LIBOSMSCOUT_CFLAGS)  \
-	$(GPS_CFLAGS)  \
-	$(SIGC_CFLAGS)  \
-	$(GLIBMM_CFLAGS)  \
-	$(EFL_CFLAGS)  \
-	$(OICFPROVIDER_CFLAGS) 
-
-
-OISPNavigation_libosmscout_CFLAGS =  \
 	$(PROFILING_CFLAGS)  \
 	$(DBUSMM_CFLAGS)  \
         $(DBUSMMECORE_CFLAGS)  \
@@ -67,7 +58,11 @@ OISPNavigation_libosmscout_CFLAGS =  \
 	$(EFL_CFLAGS)  \
 	$(PROFILING_CFLAGS)  \
 	$(OICFPROVIDER_CFLAGS) \
-	$(STOPCLOCK_CFLAGS)
+	$(STOPCLOCK_CFLAGS) \
+        $(LOG4CXX_CFLAGS)
+
+OISPNavigation_libosmscout_CFLAGS = \
+        $(EFL_CFLAGS)
 
 ## File created by the gnome-build tools
 

@@ -19,7 +19,8 @@ OISPControl_simu_LDADD = \
         $(DBUSMMECORE_LIBS) \
         $(SIGC_LIBS) \
         $(EFL_LIBS) \
-        $(OICFPROVIDER_LIBS)
+        $(OICFPROVIDER_LIBS) \
+        $(LOG4CXX_LIBS)
 
 OISPControl_simu_CXXFLAGS = \
         $(PROFILING_CFLAGS) \
@@ -27,7 +28,8 @@ OISPControl_simu_CXXFLAGS = \
         $(DBUSMMECORE_CFLAGS) \
         $(SIGC_CFLAGS) \
         $(EFL_CFLAGS) \
-        $(OICFPROVIDER_CFLAGS)
+        $(OICFPROVIDER_CFLAGS) \
+        $(LOG4CXX_CFLAGS)
 
 
 ## File created by the gnome-build tools

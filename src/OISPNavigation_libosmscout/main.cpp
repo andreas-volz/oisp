@@ -33,6 +33,8 @@
 #include "OICFNavigationProviderImpl.h"
 #include "optionparser.h"
 #include "Preferences.h"
+#include "searchFile.h"
+#include "Logger.h"
 
 static const char *MAP_VIEWER_NAME = "org.oicf.Navigation";
 
@@ -169,6 +171,13 @@ int main(int argc, char **argv)
   signal(SIGTERM, sig_exit);
   signal(SIGINT, sig_exit);
 
+#ifdef HAVE_LOG4CXX
+  cout << "searchDataDir ():" << searchDataDir() << endl;
+  log4cxx::PropertyConfigurator::configure(searchDataDir() + "/logging.prop");
+#endif // HAVE_LOG4CXX
+
+  Logger logger("oisp.Navigation.main");
+
   Preferences &preferences = Preferences::instance ();
   preferences.init ();
   
@@ -210,11 +219,12 @@ int main(int argc, char **argv)
   navigation.setOICFNavigationListenerProvider(&mapViewerListenerProvider);
 
   navigation.start();
-
-  cout << "OISPNavigation server started..." << endl;
+  
+  LOG4CXX_INFO(logger, "OISPNavigation server started...");
 
   screenManager.app->exec();
+
+  LOG4CXX_INFO(logger, "App Exit!");
   
-  cout << "App Exit!" << endl;
   return 0;
 }

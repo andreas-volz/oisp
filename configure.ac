@@ -3,7 +3,7 @@ dnl Created by Anjuta application wizard.
 
 AC_INIT(oisp, 0.1)
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
 
@@ -102,6 +102,21 @@ AC_SUBST(EFL_LIBS)
 PKG_CHECK_MODULES(OICFPROVIDER, OICFControlProvider OICFNavigationProvider OICFMediaProvider)
 AC_SUBST(OICFPROVIDER_CFLAGS)
 AC_SUBST(OICFPROVIDER_LIBS)
+
+dnl Check for option to enable logging
+AC_MSG_CHECKING(whether to enable logging)
+AC_ARG_ENABLE(logging,
+        [  --enable-logging=[no/yes]        enables logging build (default=yes)],,
+                 enable_logging=yes)
+
+if [ ! test "$enable_logging" != "yes"]; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(HAVE_LOGGING, 1, [Define to enable logging build])
+  PKG_CHECK_MODULES([LOG4CXX], liblog4cxx,
+        AC_DEFINE(HAVE_LOG4CXX, 1, [Define to enable logging build]),
+        [test 1 = 1]
+  )
+fi
 
 
 #dnl Set PACKAGE SOURCE DIR in config.h.
