@@ -46,6 +46,8 @@ private:
 
   void createWidgets();
 
+  Logger mLogger;
+
   ScreenManager &screenManager;
 
   Navigation *mNavigation;

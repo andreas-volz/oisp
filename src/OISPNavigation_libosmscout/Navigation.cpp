@@ -18,6 +18,7 @@
 using namespace std;
 
 Navigation::Navigation(OICFNavigationListenerProvider *mapViewerListenerProvider) :
+  mLogger("oisp.Navigation.Navigation"),
   mGPSReceived(false),
   minMapZoom(16),
   maxMapZoom(0),
@@ -82,7 +83,7 @@ void Navigation::initGPS(const std::string &host, int port)
   }
   else
   {
-    cerr << "Warning: No GPS connected!" << endl;
+    LOG4CXX_WARN(mLogger, "No GPS connected!");
   }
 }
 
@@ -128,7 +129,7 @@ void Navigation::getGPSPositionWGS84(double &outLon, double &outLat)
 //        solution: don't block the GPS data thread!!
 void Navigation::onGPSData(struct gps_data_t *gpsData)
 {
-  cout << "onGPSData" << endl;
+  LOG4CXX_TRACE(mLogger, "onGPSData");
 
   if (gpsData->status == STATUS_FIX)
   {
@@ -167,7 +168,7 @@ void Navigation::onGPSData(struct gps_data_t *gpsData)
     // FIXME: This is a little hack as gps updates start before DBus has started
     if (mNavigationListenerProvider)
     {
-      cout << "send GPS Info to GUI" << endl;
+      LOG4CXX_TRACE(mLogger, "send GPS Info to GUI");
       mNavigationListenerProvider->updateGPSPositionWGS84(coord);
     }
   }
@@ -235,66 +236,65 @@ int Navigation::getGPSHeight()
 /// DEBUG CODE BELOW HERE
 void Navigation::dumpGPSData(struct gps_data_t *gpsData)
 {
-  cout << "struct gps_data_t:" << endl
-       << "__________________" << endl;
+  LOG4CXX_INFO(mLogger, "struct gps_data_t:");
+  LOG4CXX_INFO(mLogger, "__________________");
 
-  cout << "Status: ";
+  LOG4CXX_INFO(mLogger, "Status: ");
   switch (gpsData->status)
   {
   case STATUS_NO_FIX:
-    cout << "No Fix" << endl;
+    LOG4CXX_INFO(mLogger, "No Fix");
     break;
 
   case STATUS_FIX:
-    cout << "Fix" << endl;
+    LOG4CXX_INFO(mLogger, "Fix");
     break;
 
   case STATUS_DGPS_FIX:
-    cout << "DGPS Fix" << endl;
+    LOG4CXX_INFO(mLogger, "DGPS Fix");
     break;
   }
 
-  cout << "Satellites used: " << gpsData->satellites_used << endl;
+  LOG4CXX_INFO(mLogger, "Satellites used: " << gpsData->satellites_used);
 
-  cout << endl << "struct gps_fix_t:" << endl
-       << "_________________" << endl;
+  LOG4CXX_INFO(mLogger, "struct gps_fix_t:");
+  LOG4CXX_INFO(mLogger, "_________________");
 
   struct gps_fix_t *gpsFix;
   gpsFix = &gpsData->fix;
 
-  cout << "Time: " << gpsFix->time << endl;
+  LOG4CXX_INFO(mLogger, "Time: " << gpsFix->time);
 
-  cout << "Mode: ";
+  LOG4CXX_INFO(mLogger, "Mode: ");
   switch (gpsFix->mode)
   {
   case MODE_NOT_SEEN:
-    cout << "Not seen" << endl;
+    LOG4CXX_INFO(mLogger, "Not seen");
     break;
 
   case MODE_NO_FIX:
-    cout << "No Fix" << endl;
+    LOG4CXX_INFO(mLogger, "No Fix");
     break;
 
   case MODE_2D:
-    cout << "2D" << endl;
+    LOG4CXX_INFO(mLogger, "2D");
     break;
 
   case MODE_3D:
-    cout << "3D" << endl;
+    LOG4CXX_INFO(mLogger, "3D");
     break;
   }
 
-  cout << "ept: " << gpsFix->ept << endl;
-  cout << "latitude: " << gpsFix->latitude << endl;
-  cout << "longitude: " << gpsFix->longitude << endl;
-  cout << "altitude: " << gpsFix->altitude << endl;
-  cout << "epv: " << gpsFix->epv << endl;
-  cout << "track: " << gpsFix->track << endl;
-  cout << "epd: " << gpsFix->epd << endl;
-  cout << "speed: " << gpsFix->speed << endl;
-  cout << "eps: " << gpsFix->eps << endl;
-  cout << "climb: " << gpsFix->climb << endl;
-  cout << "epc: " << gpsFix->epc << endl;
+  LOG4CXX_INFO(mLogger, "ept: " << gpsFix->ept);
+  LOG4CXX_INFO(mLogger, "latitude: " << gpsFix->latitude);
+  LOG4CXX_INFO(mLogger, "longitude: " << gpsFix->longitude);
+  LOG4CXX_INFO(mLogger, "altitude: " << gpsFix->altitude);
+  LOG4CXX_INFO(mLogger, "epv: " << gpsFix->epv);
+  LOG4CXX_INFO(mLogger, "track: " << gpsFix->track);
+  LOG4CXX_INFO(mLogger, "epd: " << gpsFix->epd);
+  LOG4CXX_INFO(mLogger, "speed: " << gpsFix->speed);
+  LOG4CXX_INFO(mLogger, "eps: " << gpsFix->eps);
+  LOG4CXX_INFO(mLogger, "climb: " << gpsFix->climb);
+  LOG4CXX_INFO(mLogger, "epc: " << gpsFix->epc);
 
-  cout << endl;
 }

@@ -17,6 +17,8 @@
 #include <StopClock/StopClock.h>
 #endif
 
+#include "Logger.h"
+
 class MapCanvas : public Esmartxx::Cairo
 {
 public:
@@ -31,6 +33,7 @@ public:
   void startRouteTo(double lat, double lon, const std::string &city, const std::string &street);
 
 private:
+  Logger mLogger;
   std::string mMapFolder;
   osmscout::DatabaseParameter mDatabaseParameter;
   osmscout::RouterParameter mRouterParameter;

@@ -7,6 +7,7 @@
 
 #include "GPSConnection.h"
 #include <OICFNavigation/OICFNavigationListenerProvider.h>
+#include "Logger.h"
 
 /* Eflxx */
 #include <ecorexx/Ecorexx.h>
@@ -75,6 +76,8 @@ private:
 
   bool triggerGPSPoll(Ecorexx::Timer &timer);
 
+  Logger mLogger;
+  
   GPSConnection mGPSCon;
 
   Glib::Mutex m_mutexGPSData;

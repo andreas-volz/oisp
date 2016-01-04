@@ -3,6 +3,7 @@
 
 #include <dbus-c++/dbus.h>
 #include <OICFNavigation/OICFNavigationProvider.h>
+#include "Logger.h"
 
 /* forward declarations */
 class Navigation;
@@ -25,10 +26,12 @@ private:
   void searchCity(const std::string& city);
   void getNextValidCharacters();
 
+  // those generic calls are created to test new features fast without adding new functions to oicf
   void generic1(const std::string &param1, const std::string &param2, const std::string &param3);
   void generic2(const std::string &param1, const std::string &param2, const std::string &param3);
   void generic3(const std::string &param1, const std::string &param2, const std::string &param3);
 
+  Logger mLogger;
   Navigation *m_navigation;
 };
 

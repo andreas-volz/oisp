@@ -11,6 +11,7 @@ using namespace Eflxx;
 
 NavigationScreen::NavigationScreen() :
   screenManager(ScreenManager::instance()),
+  mLogger("oisp.Navigation.NavigationScreen"),
   mNavigation(NULL),
   mCarPosEdje(*(screenManager.getEvasCanvas()), searchThemeFile("enigator_default.edj"), "pointer"),
   mCrossCursorEdje(*(screenManager.getEvasCanvas()), searchThemeFile("enigator_default.edj"), "cursor"),
@@ -83,8 +84,6 @@ NavigationScreen::MapMode NavigationScreen::getMapMode()
 
 bool NavigationScreen::drawerTask(Ecorexx::Timer &timer)
 {
-  cout << "+mapDrawerTask" << endl;
-
   // temporary zoom animation counter
   static int i = 0;
   //i += 200; // activate this to see zoom in animation
@@ -109,7 +108,7 @@ bool NavigationScreen::drawerTask(Ecorexx::Timer &timer)
   }
   else
   {
-    cerr << "Skip map drawing frame!" << endl;
+    LOG4CXX_DEBUG(mLogger, "Skip map drawing frame!");
   }
 #ifdef PROFILING
   mDrawClock.resetClock();
@@ -166,6 +165,6 @@ void NavigationScreen::setCurrentGPSPositon(double lon, double lat)
 
 void NavigationScreen::setZoom(double zoom)
 {
-  cout << "setting zoom: " << zoom << endl;
+  LOG4CXX_INFO(mLogger, "setting zoom: " << zoom);
   mZoom = zoom;
 }

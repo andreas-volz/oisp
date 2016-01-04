@@ -16,7 +16,8 @@
 using namespace std;
 
 OICFNavigationProviderImpl::OICFNavigationProviderImpl(DBus::Connection &connection) :
-  OICFNavigationProvider(connection)
+  OICFNavigationProvider(connection),
+  mLogger("oisp.Navigation.OICFNavigationProviderImpl")
 {
 
 }
@@ -28,25 +29,26 @@ void OICFNavigationProviderImpl::setNavigation(Navigation *navigation)
 
 void OICFNavigationProviderImpl::moveMapSteps(const int32_t &direction, const int32_t &steps)
 {
-  cout << "moveMapSteps" << endl;
+  LOG4CXX_TRACE(mLogger, "moveMapSteps()");
 
   m_navigation->moveMap((Navigation::PanDirection) direction);
 }
 
 void OICFNavigationProviderImpl::zoomIn()
 {
-  cout << "zoomIn ()" << endl;
+  LOG4CXX_TRACE(mLogger, "zoomIn()");
   m_navigation->zoomIn();
 }
 
 void OICFNavigationProviderImpl::zoomOut()
 {
-  cout << "zoomOut ()" << endl;
+  LOG4CXX_TRACE(mLogger, "zoomOut()");
   m_navigation->zoomOut();
 }
 
 void OICFNavigationProviderImpl::jumpToPointer()
 {
+  LOG4CXX_TRACE(mLogger, "jumpToPointer()");
   m_navigation->jumpToPointer();
 }
 

@@ -172,7 +172,7 @@ int main(int argc, char **argv)
   signal(SIGINT, sig_exit);
 
 #ifdef HAVE_LOG4CXX
-  cout << "searchDataDir ():" << searchDataDir() << endl;
+  //cout << "searchDataDir ():" << searchDataDir() << endl;
   log4cxx::PropertyConfigurator::configure(searchDataDir() + "/logging.prop");
 #endif // HAVE_LOG4CXX
 

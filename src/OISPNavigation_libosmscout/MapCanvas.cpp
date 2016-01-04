@@ -27,6 +27,7 @@ using namespace osmscout;
 
 MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   Esmartxx::Cairo(canvas, size, true),
+  mLogger("oisp.Navigation.MapCanvas"),
   //mMapFolder(string(PACKAGE_DATA_DIR) +  "/osmscout/map/current/"),
   mMapFolder("/home/andreas/.osmscout/map/current"),
   mDatabase(std::make_shared<osmscout::Database>(mDatabaseParameter)),
@@ -98,7 +99,7 @@ void MapCanvas::initOSMScout()
 
   if (!mDatabase->Open(mMapFolder))
   {
-    std::cerr << "Cannot open database: " << mMapFolder << std::endl;
+    LOG4CXX_ERROR(mLogger, "Cannot open database: " + mMapFolder);
     exit(1);
     // TODO: throw Exception
   }
@@ -114,7 +115,7 @@ void MapCanvas::initOSMScout()
 
   if (!newStyleConfig->Load(style))
   {
-    std::cerr << "Cannot open style: " << style << std::endl;
+    LOG4CXX_ERROR(mLogger, "Cannot open style: " + style);
     exit(1);
     // TODO: throw Exception
   }
@@ -162,13 +163,13 @@ void MapCanvas::GetCarSpeedTable(std::map<std::string,double>& map)
 
 void MapCanvas::startRouteTo(double lat, double lon, const std::string &city, const std::string &street)
 {
-  cout << "startRouteTo: lat=" << lat << " lon=" << lon << " city=" << city << " street=" << street << endl;
+  LOG4CXX_TRACE(mLogger,  "startRouteTo: lat=" << lat << " lon=" << " city=" << city << " street=" << street);
 
   osmscout::WayRef way;
   bool wayAdrFound = searchWay(city, street, way);
   if (!wayAdrFound)
   {
-    cerr << "no target way found!" << endl;
+    LOG4CXX_ERROR(mLogger, "no target way found!");
   }
   
   osmscout::ObjectFileRef targetObject;
@@ -177,10 +178,9 @@ void MapCanvas::startRouteTo(double lat, double lon, const std::string &city, co
 
   if(!way->GetCenter(center))
   {
-    exit(1);
+    LOG4CXX_ERROR(mLogger, "no way center found");
+    return; // FIXME: return state
   }
-
-  cout << "target: lat=" << center.GetLat() << " lon=" << center.GetLon() << endl;
   
   startRouting(lat, lon, center.GetLat(), center.GetLon());
 }
@@ -205,13 +205,13 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
 
   if (!mLocationService->InitializeLocationSearchEntries(searchPattern,
                                                         search)) {
-    std::cerr << "Error while parsing search string" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Error while parsing search string: " + searchPattern);
     return false;
   }
 
   if (!mLocationService->SearchForLocations(search,
                                            searchResult)) {
-    std::cerr << "Error while searching for location" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Error while searching for location");
     found = false;
   }
   else
@@ -225,29 +225,20 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
         entry.location &&
         entry.address)
     {
-      cout << "Location/Address" << endl;
+      LOG4CXX_TRACE(mLogger, "Location/Address found");
 
       break; // ==> as test break after first result and use it => FIXME
     }
     else if (entry.adminRegion &&
              entry.location)
     {
-      cout << "Address: " << entry.location->name << endl;
+      LOG4CXX_TRACE(mLogger, "Address found: " + entry.location->name);
 
       for (const auto &object : entry.location->objects)
       {
         if (mDatabase->GetWayByOffset(object.GetFileOffset(),
                                 way))
         {
-          GeoCoord center;
-
-          if(!way->GetCenter(center))
-          {
-            exit(1);
-          }
-
-          cout << "target: lat=" << center.GetLat() << " lon=" << center.GetLon() << endl;
-          
           foundWay = way;
           break; // FIXME: break after first hit 
         }
@@ -256,11 +247,11 @@ bool MapCanvas::searchWay(const std::string &city, const std::string &street, os
     else if (entry.adminRegion &&
              entry.poi)
     {
-      cout << "POI" << endl;
+      LOG4CXX_TRACE(mLogger, "POI found");
     }
     else if (entry.adminRegion)
     {
-      cout << "AdminRegion" << endl;
+      LOG4CXX_TRACE(mLogger, "AdminRegion found");
     }
   }
 
@@ -287,7 +278,7 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
   osmscout::MapParameter        drawParameter;
   osmscout::AreaSearchParameter searchParameter;
     
-  cout << "drawing with: lat=" << lat << " lon=" << lon << " zoom=" << zoom << endl;
+  LOG4CXX_TRACE(mLogger, "drawing with: lat=" << lat << " lon=" << lon << " zoom=" << zoom);
 
   mProjection.Set(lon, lat, osmscout::Magnification(zoom), DPI, mSize.width(), mSize.height());
 
@@ -297,11 +288,10 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
   mMapService->LookupTiles(mProjection, tiles);
   if(!mMapService->LoadMissingTileData(searchParameter, *mStyleConfig, tiles))
   {
-    cerr << "*** Loading of data has error or was interrupted" << endl;
+    LOG4CXX_ERROR(mLogger, "Loading of data has error or was interrupted");
   }
   mMapService->ConvertTilesToMapData(tiles, mMapData);
 
-  
   if (mPainter->DrawMap(mProjection,
                        drawParameter,
                        mMapData,
@@ -313,7 +303,7 @@ void MapCanvas::drawMap(double lon, double lat, double zoom)
       
       if (cairo_surface_write_to_png(mCairoSurface, (toString(i + 1) + ".png").c_str()) != CAIRO_STATUS_SUCCESS)
       {
-        std::cerr << "Cannot write PNG" << std::endl;
+        LOG4CXX_ERROR(mLogger, "Cannot write PNG");
       }
       ++i;
     }
@@ -343,7 +333,7 @@ Glib::ustring MapCanvas::calcNextValidCharacters(const std::list <osmscout::Loca
     Glib::ustring foundLoc;
 
     // only debug
-    cout << "Found Location: " << lit->name << endl;
+    LOG4CXX_TRACE(mLogger, "Found Location: " + lit->name);
 
     loc = ucstr.find(locationNameUc);
 
@@ -358,7 +348,7 @@ Glib::ustring MapCanvas::calcNextValidCharacters(const std::list <osmscout::Loca
     }
     catch (std::out_of_range ex)
     {
-      cout << "No next char" << endl;
+      LOG4CXX_TRACE(mLogger, "No next char");
     }
   }
 
@@ -391,7 +381,7 @@ void MapCanvas::startRouting(double startLat, double startLon,
                                                                                 routerFilenamebase);
 
   if (!router->Open()) {
-    std::cerr << "Cannot open routing database" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Cannot open routing database");
 
     exit(1);
   }
@@ -427,12 +417,12 @@ void MapCanvas::startRouting(double startLat, double startLon,
                                       1000,
                                       startObject,
                                       startNodeIndex)) {
-    std::cerr << "Error while searching for routing node near start location!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Error while searching for routing node near start location!");
     exit(1);
   }
 
   if (startObject.Invalid() || startObject.GetType()==osmscout::refNode) {
-    std::cerr << "Cannot find start node for start location!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Cannot find start node for start location!");
   }
 
   osmscout::ObjectFileRef targetObject;
@@ -444,12 +434,12 @@ void MapCanvas::startRouting(double startLat, double startLon,
                                       1000,
                                       targetObject,
                                       targetNodeIndex)) {
-    std::cerr << "Error while searching for routing node near target location!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Error while searching for routing node near target location!");
     exit(1);
   }
 
   if (targetObject.Invalid() || targetObject.GetType()==osmscout::refNode) {
-    std::cerr << "Cannot find start node for target location!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "Cannot find start node for target location!");
   }
 
   if (!router->CalculateRoute(routingProfile,
@@ -458,13 +448,13 @@ void MapCanvas::startRouting(double startLat, double startLon,
                               targetObject,
                               targetNodeIndex,
                               data)) {
-    std::cerr << "There was an error while calculating the route!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "There was an error while calculating the route!");
     router->Close();
     exit(1);
   }
 
   if (data.IsEmpty()) {
-    std::cout << "No Route found!" << std::endl;
+    LOG4CXX_ERROR(mLogger, "No Route found!");
 
     router->Close();
 
