@@ -1,8 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+/* sigc++ */
+#include <sigc++/sigc++.h>
+
 /* EFLxx */
-#include <emotionxx/Emotionxx.h>
+//#include <emotionxx/Emotionxx.h>
 
 /* STD */
 #include <cstdlib>
@@ -11,7 +14,7 @@
 class Player
 {
 public:
-  Player(Emotionxx::AudioObject *emotion);
+  Player(/*Emotionxx::AudioObject *emotion*/);
 
   ~Player();
 
@@ -29,11 +32,9 @@ protected:
 
 
 private:
-  Emotionxx::AudioObject *mEmotion;
+  //Emotionxx::AudioObject *mEmotion;
 
-  void playBackFinished(Evasxx::Object &obj, void *event_info);
+  void playBackFinished(/*Evasxx::Object &obj, void *event_info*/);
 };
 
 #endif /* PLAYER_H */
-
-

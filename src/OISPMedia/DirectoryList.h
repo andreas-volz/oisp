@@ -1,5 +1,5 @@
 #ifndef DIRECTORYLIST_H
-#define DIRECTORYLIST_H 1
+#define DIRECTORYLIST_H
 
 #include <sys/types.h>
 #include <dirent.h>
@@ -8,9 +8,6 @@
 #include <unistd.h>
 #include <string>
 #include <list>
-
-using std::string;
-using std::list;
 
 /*! \brief Represents a subset of files in a directory hierarchy
 
@@ -23,18 +20,6 @@ To use this class:
  */
 class DirectoryList
 {
-private:
-  /// recursive function to read directory list
-  void readDirRecursive(const string &dir_str);
-  bool hasFileFilterEnding(const string &file) const;
-
-  list <string> file_list;
-  list <string> fileFilterList;
-  string path;
-  int recursive_level;
-  int recursive_counter;
-  int file_type;
-
 public:
   DirectoryList();
 
@@ -58,13 +43,15 @@ public:
    *			(e.g. ".target")
    * \todo support regex style
    */
-  void addFileFilter(const string &file_filter);
+  void addFileFilter(const std::string &file_filter);
+
+  void clearFileFilter();
 
   /// set the root path where to start file listing
   /*!
    * \param path the root path
    */
-  void setRootPath(const string &path);
+  void setRootPath(const std::string &path);
 
   /// set the recursive level
   /*!
@@ -79,13 +66,28 @@ public:
   /*!
    * \return the complete list of all matching files
    */
-  const list <string> &getDirectoryList();
+  const std::list <std::string> &getDirectoryList();
 
   /// set the file types of interest (default: REGULAR_FILE)
   /*!
    * \param file_type the file type
    */
   void setFileType(FileType file_type);
+
+  void setFullPath(bool full);
+
+private:
+  /// recursive function to read directory list
+  void readDirRecursive(const std::string &dir_str);
+  bool hasFileFilterEnding(const std::string &file) const;
+
+  std::list <std::string> file_list;
+  std::list <std::string> fileFilterList;
+  std::string path;
+  int recursive_level;
+  int recursive_counter;
+  int file_type;
+  bool mFullPath;
 };
 
 #endif	// DIRECTORYLIST_H

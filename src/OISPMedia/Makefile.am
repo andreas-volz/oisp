@@ -24,7 +24,7 @@ OISPMedia_LDADD = \
 	$(OICFPROVIDER_LIBS) \
 	$(GST_LIBS) \
 	$(EFL_LIBS) \
-        $(LOG4CXX_LIBS)
+	$(LOG4CXX_LIBS)
 
 OISPMedia_CXXFLAGS = \
 	$(PROFILING_CFLAGS) \
@@ -32,10 +32,11 @@ OISPMedia_CXXFLAGS = \
 	$(OICFPROVIDER_CFLAGS) \
 	$(DBUSMM_CFLAGS) \
 	$(DBUSMMECORE_CFLAGS) \
+	$(BOOST_CPPFLAGS) \
 	$(EFL_CFLAGS) \
 	$(OICFPROVIDER_CFLAGS) \
 	$(GST_CFLAGS) \
-        $(LOG4CXX_CFLAGS)
+	$(LOG4CXX_CFLAGS)
 
 ## File created by the gnome-build tools
 

@@ -4,6 +4,7 @@
 
 SUBDIRS = \
 	OISPNavigation_libosmscout \
+	OISPMedia \
 	OISPControl \
 	OISPControl_simu
 

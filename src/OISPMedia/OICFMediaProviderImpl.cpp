@@ -14,12 +14,10 @@
 #include "glibmm.h"
 #include "util.h"
 
-#include "boost/filesystem/operations.hpp"
-#include "boost/filesystem/path.hpp"
-#include "boost/progress.hpp"
+//#include <boost/filesystem.hpp>
 
 using namespace std;
-namespace fs = boost::filesystem;
+//using namespace boost::filesystem;
 
 OICFMediaProviderImpl::OICFMediaProviderImpl(DBus::Connection &connection)
   : OICFMediaProvider(connection),
@@ -47,74 +45,34 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
 
   cout << "getWindowList()" << endl;
 
-  fs::path full_path(fs::initial_path<fs::path>());
-
-  //m_CurrentPath -> TODO: handle it!
-
-  full_path = fs::system_complete(fs::path(m_CurrentPath, fs::native));
-
-  unsigned long file_count = 0;
-  unsigned long dir_count = 0;
-  unsigned long other_count = 0;
-  unsigned long err_count = 0;
-
-  if (!fs::exists(full_path))
+  DirectoryList dirList;
+  dirList.setRootPath(m_RootPath);
+  dirList.setRecursive(DirectoryList::NO_RECURSIVE);
+  dirList.setFileType(DirectoryList::DIRECTORY);
+  dirList.setFullPath(false);
+  m_Dirs = dirList.getDirectoryList();
+  for (list<string>::const_iterator dir_it = m_Dirs.begin();
+       dir_it != m_Dirs.end();
+       ++dir_it)
   {
-    std::cout << "\nNot found: " << full_path.native_file_string() << std::endl;
-    return;
+    const string &dir = *dir_it;
+    cout << "D: " << dir << endl;
   }
 
-  if (fs::is_directory(full_path))
+  DirectoryList dirList2;
+  dirList2.setRootPath(m_RootPath);
+  dirList2.setRecursive(DirectoryList::NO_RECURSIVE);
+  dirList2.setFullPath(false);  
+  dirList2.setFileType(DirectoryList::REGULAR_FILE);
+  m_Files = dirList2.getDirectoryList();
+  for (list<string>::const_iterator dir_it = m_Files.begin();
+       dir_it != m_Files.end();
+       ++dir_it)
   {
-    std::cout << "\nIn directory: "
-              << full_path.native_directory_string() << "\n\n";
-    fs::directory_iterator end_iter;
-    for (fs::directory_iterator dir_itr(full_path);
-         dir_itr != end_iter;
-         ++dir_itr)
-    {
-      try
-      {
-        if (fs::is_directory(dir_itr->status()))
-        {
-          std::cout << dir_itr->path() << " [directory]" << endl;
-          string file = Glib::path_get_basename(dir_itr->path().string());
-
-          m_Dirs.push_back(file);
-          ++dir_count;
-        }
-        else if (fs::is_regular(dir_itr->status()))
-        {
-          std::cout << dir_itr->path() << " [title]" << endl;
-          string file = Glib::path_get_basename(dir_itr->path().string());
-
-          m_Files.push_back(file);
-
-          ++file_count;
-        }
-        else
-        {
-          std::cout << dir_itr->path() << " [other]\n";
-          string file = Glib::path_get_basename(dir_itr->path().string());
-          ++other_count;
-        }
-      }
-      catch (const std::exception &ex)
-      {
-        std::cout << dir_itr->path() << " " << ex.what() << std::endl;
-        ++err_count;
-      }
-    }
-    std::cout << "\n" << file_count << " files\n"
-              << dir_count << " directories\n"
-              << other_count << " others\n"
-              << err_count << " errors\n";
+    const string &dir = *dir_it;
+    cout << "F:" << dir << endl;
   }
-  else // must be a file
-  {
-    std::cout << "\nFound: " << full_path.native_file_string() << "\n";
-  }
-
+  
   m_Dirs.sort();
   m_Files.sort();
 
@@ -128,6 +86,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     filelist.push_back(lineUp);
   }
 
+  
   // below: split complete list in folder and files list
 
   unsigned int i = 0;
@@ -186,7 +145,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     m_MediaListenerProvider->updateSelectedTitle(playingTitle);
   }
 
-  //cout << "OICFMediaProviderImpl::getWindowList" << endl;
+  cout << "OICFMediaProviderImpl::getWindowList" << endl;
 }
 
 void OICFMediaProviderImpl::selectPath(const LineVector &path)
@@ -327,3 +286,72 @@ std::map< std::string, std::string > OICFMediaProviderImpl::Info()
   return info;
 }
 
+#if 0
+  fs::path full_path(fs::initial_path<fs::path>());
+
+  //m_CurrentPath -> TODO: handle it!
+
+  full_path = fs::system_complete(fs::path(m_CurrentPath));
+
+  unsigned long file_count = 0;
+  unsigned long dir_count = 0;
+  unsigned long other_count = 0;
+  unsigned long err_count = 0;
+
+  if (!fs::exists(full_path))
+  {
+    std::cout << "\nNot found: " << full_path.string() << std::endl;
+    return;
+  }
+
+  if (fs::is_directory(full_path))
+  {
+    std::cout << "\nIn directory: "
+              << full_path.string() << "\n\n";
+    fs::directory_iterator end_iter;
+    for (fs::directory_iterator dir_itr(full_path);
+         dir_itr != end_iter;
+         ++dir_itr)
+    {
+      try
+      {
+        if (fs::is_directory(dir_itr->status()))
+        {
+          std::cout << dir_itr->path() << " [directory]" << endl;
+          string file = Glib::path_get_basename(dir_itr->path().string());
+
+          m_Dirs.push_back(file);
+          ++dir_count;
+        }
+        else if (fs::is_regular(dir_itr->status()))
+        {
+          std::cout << dir_itr->path() << " [title]" << endl;
+          string file = Glib::path_get_basename(dir_itr->path().string());
+
+          m_Files.push_back(file);
+
+          ++file_count;
+        }
+        else
+        {
+          std::cout << dir_itr->path() << " [other]\n";
+          string file = Glib::path_get_basename(dir_itr->path().string());
+          ++other_count;
+        }
+      }
+      catch (const std::exception &ex)
+      {
+        std::cout << dir_itr->path() << " " << ex.what() << std::endl;
+        ++err_count;
+      }
+    }
+    std::cout << "\n" << file_count << " files\n"
+              << dir_count << " directories\n"
+              << other_count << " others\n"
+              << err_count << " errors\n";
+  }
+  else // must be a file
+  {
+    std::cout << "\nFound: " << full_path.string() << "\n";
+  }
+#endif
