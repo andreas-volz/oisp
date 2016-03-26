@@ -14,10 +14,7 @@
 #include "glibmm.h"
 #include "util.h"
 
-//#include <boost/filesystem.hpp>
-
 using namespace std;
-//using namespace boost::filesystem;
 
 OICFMediaProviderImpl::OICFMediaProviderImpl(DBus::Connection &connection)
   : OICFMediaProvider(connection),
@@ -41,12 +38,12 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
 {
   m_Files.clear();
   m_Dirs.clear();
-  filelist.clear();
+  mFilelist.clear();
 
   cout << "getWindowList()" << endl;
 
   DirectoryList dirList;
-  dirList.setRootPath(m_RootPath);
+  dirList.setRootPath(m_CurrentPath);
   dirList.setRecursive(DirectoryList::NO_RECURSIVE);
   dirList.setFileType(DirectoryList::DIRECTORY);
   dirList.setFullPath(false);
@@ -60,7 +57,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
   }
 
   DirectoryList dirList2;
-  dirList2.setRootPath(m_RootPath);
+  dirList2.setRootPath(m_CurrentPath);
   dirList2.setRecursive(DirectoryList::NO_RECURSIVE);
   dirList2.setFullPath(false);  
   dirList2.setFileType(DirectoryList::REGULAR_FILE);
@@ -83,12 +80,11 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     lineUp.name = "Up";
     lineUp.type = Line::FolderUp;
     lineUp.id = Line::InvalidID;
-    filelist.push_back(lineUp);
+    mFilelist.push_back(lineUp);
   }
 
   
-  // below: split complete list in folder and files list
-
+  // copy raw data to folder/file containers
   unsigned int i = 0;
   for (list<string>::const_iterator dir_it = m_Dirs.begin();
        dir_it != m_Dirs.end();
@@ -101,13 +97,13 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     l.type = Line::Folder;
     l.id = i;
     cout << "Dir: " << dir << endl;
-    filelist.push_back(l);
+    mFilelist.push_back(l);
     ++i;
   }
 
   Line playingTitle;
 
-  i = 0;
+  //i = 0; // TODO: folders and files have one index or each one starts at 0?
   for (list<string>::const_iterator file_it = m_Files.begin();
        file_it != m_Files.end();
        ++file_it)
@@ -134,11 +130,11 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
       mStartup = false;
     }
 
-    filelist.push_back(l);
+    mFilelist.push_back(l);
     ++i;
   }
 
-  m_MediaListenerProvider->getWindowListResult(filelist, 0, 100, 20);
+  m_MediaListenerProvider->getWindowListResult(mFilelist, 0, 100, 20);
 
   if ((playingTitle.type == Line::Title) && (playingTitle.id != Line::InvalidID))
   {
@@ -164,7 +160,6 @@ void OICFMediaProviderImpl::selectPath(const LineVector &path)
     const Line &l = *lv_it;
 
     // TODO: check if found is a really existing path!
-    // TODO: handle with boost::path
     m_CurrentPath = m_CurrentPath + "/" + l.name;
   }
 
@@ -190,15 +185,15 @@ void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
   {
     const Line *lfound = NULL;
 
-    for (LineVector::const_iterator vs_it = filelist.begin();
-         vs_it != filelist.end();
+    for (LineVector::const_iterator vs_it = mFilelist.begin();
+         vs_it != mFilelist.end();
          ++vs_it)
     {
       const Line &l = *vs_it;
 
       if (l.id == m_playingTitleID)
       {
-        if (vs_it + num != filelist.end()) // select next file if available
+        if (vs_it + num != mFilelist.end()) // select next file if available
         {
           lfound = &(*(vs_it + num));
         }
@@ -236,8 +231,8 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
 
   cout << "OICFMediaProviderImpl::selectTitle" << endl;
 
-  for (LineVector::const_iterator vs_it = filelist.begin();
-       vs_it != filelist.end();
+  for (LineVector::const_iterator vs_it = mFilelist.begin();
+       vs_it != mFilelist.end();
        ++vs_it)
   {
     const Line &l = *vs_it;
@@ -246,22 +241,49 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
     {
       m_playingTitleID = title.id;
       lfound = &l;
+      
       break;
     }
   }
-
-  m_player->stop();
 
   // TODO: check if found is a really existing file!
 
   if (lfound)
   {
-    const string playString("file://" + m_CurrentPath + "/" + lfound->name);
-    cout << "Play: " << playString << endl;
-    m_player->open(playString);
-    m_player->play();
-    m_MediaListenerProvider->updateSelectedTitle(*lfound);
-    m_PlayingPath = m_CurrentPath;
+    if(title.type == Line::Title)
+    {
+      const string playString("file://" + m_CurrentPath + "/" + lfound->name);
+      cout << "Line::Title" << endl;
+
+      cout << "Play: " << playString << endl;
+
+      m_player->stop();
+      
+      m_player->open(playString);
+      m_player->play();
+      m_MediaListenerProvider->updateSelectedTitle(*lfound);
+      m_PlayingPath = m_CurrentPath;
+    }
+    else if(title.type == Line::Folder)
+    {
+      cout << "Line::Folder" << endl;
+
+      m_CurrentPathVector.push_back(title);
+
+      selectPath(m_CurrentPathVector);
+      
+      getWindowList(0, 100);
+    }
+    else if(title.type == Line::FolderUp)
+    {
+      m_CurrentPathVector.pop_back();
+
+      selectPath(m_CurrentPathVector);
+      
+      getWindowList(0, 100);
+      
+      cout << "Line::FolderUp" << endl;
+    }
   }
   else
   {
@@ -285,73 +307,3 @@ std::map< std::string, std::string > OICFMediaProviderImpl::Info()
 
   return info;
 }
-
-#if 0
-  fs::path full_path(fs::initial_path<fs::path>());
-
-  //m_CurrentPath -> TODO: handle it!
-
-  full_path = fs::system_complete(fs::path(m_CurrentPath));
-
-  unsigned long file_count = 0;
-  unsigned long dir_count = 0;
-  unsigned long other_count = 0;
-  unsigned long err_count = 0;
-
-  if (!fs::exists(full_path))
-  {
-    std::cout << "\nNot found: " << full_path.string() << std::endl;
-    return;
-  }
-
-  if (fs::is_directory(full_path))
-  {
-    std::cout << "\nIn directory: "
-              << full_path.string() << "\n\n";
-    fs::directory_iterator end_iter;
-    for (fs::directory_iterator dir_itr(full_path);
-         dir_itr != end_iter;
-         ++dir_itr)
-    {
-      try
-      {
-        if (fs::is_directory(dir_itr->status()))
-        {
-          std::cout << dir_itr->path() << " [directory]" << endl;
-          string file = Glib::path_get_basename(dir_itr->path().string());
-
-          m_Dirs.push_back(file);
-          ++dir_count;
-        }
-        else if (fs::is_regular(dir_itr->status()))
-        {
-          std::cout << dir_itr->path() << " [title]" << endl;
-          string file = Glib::path_get_basename(dir_itr->path().string());
-
-          m_Files.push_back(file);
-
-          ++file_count;
-        }
-        else
-        {
-          std::cout << dir_itr->path() << " [other]\n";
-          string file = Glib::path_get_basename(dir_itr->path().string());
-          ++other_count;
-        }
-      }
-      catch (const std::exception &ex)
-      {
-        std::cout << dir_itr->path() << " " << ex.what() << std::endl;
-        ++err_count;
-      }
-    }
-    std::cout << "\n" << file_count << " files\n"
-              << dir_count << " directories\n"
-              << other_count << " others\n"
-              << err_count << " errors\n";
-  }
-  else // must be a file
-  {
-    std::cout << "\nFound: " << full_path.string() << "\n";
-  }
-#endif

@@ -41,7 +41,7 @@ private:
   const std::string m_RootPath;
   Player *m_player;
   int m_playingTitleID;
-  LineVector filelist; // TODO: should not be a member!
+  LineVector mFilelist;
   bool mStartup;
 };
 
