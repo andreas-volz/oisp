@@ -8,34 +8,34 @@ static const char DATA_KEY[] = "esmart_cairo_surface";
 static void
 _err(const char *function, const char *msg, ...)
 {
-   va_list ap;
+  va_list ap;
 
-   fprintf(stderr, "ERROR: %s() ", function);
+  fprintf(stderr, "ERROR: %s() ", function);
 
-   va_start(ap, msg);
-   vfprintf(stderr, msg, ap);
-   va_end(ap);
+  va_start(ap, msg);
+  vfprintf(stderr, msg, ap);
+  va_end(ap);
 
-   fputc('\n', stderr);
+  fputc('\n', stderr);
 }
 #define err(msg, ...) _err(__FUNCTION__, msg, ##__VA_ARGS__)
 
 static void
 _esmart_image_cairo_destroy_surface(Evas_Object *o)
 {
-   cairo_surface_t *surface;
+  cairo_surface_t *surface;
 
-   surface = evas_object_data_del(o, DATA_KEY);
-   if (!surface)
-     return;
+  surface = evas_object_data_del(o, DATA_KEY);
+  if (!surface)
+    return;
 
-   cairo_surface_destroy(surface);
+  cairo_surface_destroy(surface);
 }
 
 static void
 _esmart_image_cairo_died(void *data, Evas *e, Evas_Object *o, void *einfo)
 {
-   _esmart_image_cairo_destroy_surface(o);
+  _esmart_image_cairo_destroy_surface(o);
 }
 
 /**
@@ -75,17 +75,17 @@ _esmart_image_cairo_died(void *data, Evas *e, Evas_Object *o, void *einfo)
 Evas_Object *
 esmart_image_cairo_new(Evas *evas, Evas_Coord w, Evas_Coord h, Eina_Bool alpha)
 {
-   cairo_surface_t *surface;
-   cairo_format_t format;
+  cairo_surface_t *surface;
+  cairo_format_t format;
 
-   if (alpha)
-     format = CAIRO_FORMAT_ARGB32;
-   else
-     format = CAIRO_FORMAT_RGB24;
+  if (alpha)
+    format = CAIRO_FORMAT_ARGB32;
+  else
+    format = CAIRO_FORMAT_RGB24;
 
-   surface = cairo_image_surface_create(format, w, h);
+  surface = cairo_image_surface_create(format, w, h);
 
-   return esmart_image_cairo_new_from_surface(evas, surface);
+  return esmart_image_cairo_new_from_surface(evas, surface);
 }
 
 /**
@@ -123,19 +123,19 @@ esmart_image_cairo_new(Evas *evas, Evas_Coord w, Evas_Coord h, Eina_Bool alpha)
 Evas_Object *
 esmart_image_cairo_new_from_surface(Evas *evas, cairo_surface_t *cairo_surface)
 {
-   Evas_Object *o;
+  Evas_Object *o;
 
-   o = evas_object_image_add(evas);
-   if (!o)
-     return NULL;
+  o = evas_object_image_add(evas);
+  if (!o)
+    return NULL;
 
-   if (!esmart_image_cairo_surface_set(o, cairo_surface))
-     {
-	evas_object_del(o);
-	return NULL;
-     }
+  if (!esmart_image_cairo_surface_set(o, cairo_surface))
+  {
+    evas_object_del(o);
+    return NULL;
+  }
 
-   return o;
+  return o;
 }
 
 /**
@@ -147,7 +147,7 @@ esmart_image_cairo_new_from_surface(Evas *evas, cairo_surface_t *cairo_surface)
 cairo_surface_t *
 esmart_image_cairo_surface_get(Evas_Object *o)
 {
-   return evas_object_data_get(o, DATA_KEY);
+  return evas_object_data_get(o, DATA_KEY);
 }
 
 /**
@@ -186,87 +186,87 @@ esmart_image_cairo_surface_get(Evas_Object *o)
 Eina_Bool
 esmart_image_cairo_surface_set(Evas_Object *o, cairo_surface_t *cairo_surface)
 {
-   cairo_status_t status;
-   cairo_format_t format;
-   cairo_surface_type_t type;
-   Evas_Coord w, h;
-   int has_alpha;
+  cairo_status_t status;
+  cairo_format_t format;
+  cairo_surface_type_t type;
+  Evas_Coord w, h;
+  int has_alpha;
 
-   if (!o)
-     {
-	err("o == NULL");
-	return 0;
-     }
+  if (!o)
+  {
+    err("o == NULL");
+    return 0;
+  }
 
-   if (!cairo_surface)
-     {
-	evas_object_event_callback_del(
-           o, EVAS_CALLBACK_DEL, _esmart_image_cairo_died);
-	_esmart_image_cairo_destroy_surface(o);
-	return 1;
-     }
-
-   status = cairo_surface_status(cairo_surface);
-   if (status != CAIRO_STATUS_SUCCESS)
-     {
-	err("invalid status for cairo surface: %s",
-	    cairo_status_to_string(status));
-	return 0;
-     }
-
-   type = cairo_surface_get_type(cairo_surface);
-   if (type != CAIRO_SURFACE_TYPE_IMAGE)
-     {
-	err("invalid surface type: %d, expected %d",
-	    type, CAIRO_SURFACE_TYPE_IMAGE);
-	return 0;
-     }
-
-   format = cairo_image_surface_get_format(cairo_surface);
-   if (format == CAIRO_FORMAT_ARGB32)
-     has_alpha = 1;
-   else if (format == CAIRO_FORMAT_RGB24)
-     has_alpha = 0;
-   else
-     {
-	err("unsupported format for given surface: %d", format);
-	return 0;
-     }
-
-   _esmart_image_cairo_destroy_surface(o);
-
-   w = cairo_image_surface_get_width(cairo_surface);
-   h = cairo_image_surface_get_height(cairo_surface);
-
-   evas_object_image_alpha_set(o, has_alpha);
-   evas_object_image_size_set(o, w, h);
-   evas_object_image_fill_set(o, 0, 0, w, h);
-   evas_object_image_data_set(o, cairo_image_surface_get_data(cairo_surface));
-   evas_object_resize(o, w, h);
-
-   evas_object_data_set(o, DATA_KEY, cairo_surface);
-
-   evas_object_event_callback_del(
+  if (!cairo_surface)
+  {
+    evas_object_event_callback_del(
       o, EVAS_CALLBACK_DEL, _esmart_image_cairo_died);
-   evas_object_event_callback_add(
-      o, EVAS_CALLBACK_DEL, _esmart_image_cairo_died, NULL);
+    _esmart_image_cairo_destroy_surface(o);
+    return 1;
+  }
 
-   return 1;
+  status = cairo_surface_status(cairo_surface);
+  if (status != CAIRO_STATUS_SUCCESS)
+  {
+    err("invalid status for cairo surface: %s",
+        cairo_status_to_string(status));
+    return 0;
+  }
+
+  type = cairo_surface_get_type(cairo_surface);
+  if (type != CAIRO_SURFACE_TYPE_IMAGE)
+  {
+    err("invalid surface type: %d, expected %d",
+        type, CAIRO_SURFACE_TYPE_IMAGE);
+    return 0;
+  }
+
+  format = cairo_image_surface_get_format(cairo_surface);
+  if (format == CAIRO_FORMAT_ARGB32)
+    has_alpha = 1;
+  else if (format == CAIRO_FORMAT_RGB24)
+    has_alpha = 0;
+  else
+  {
+    err("unsupported format for given surface: %d", format);
+    return 0;
+  }
+
+  _esmart_image_cairo_destroy_surface(o);
+
+  w = cairo_image_surface_get_width(cairo_surface);
+  h = cairo_image_surface_get_height(cairo_surface);
+
+  evas_object_image_alpha_set(o, has_alpha);
+  evas_object_image_size_set(o, w, h);
+  evas_object_image_fill_set(o, 0, 0, w, h);
+  evas_object_image_data_set(o, cairo_image_surface_get_data(cairo_surface));
+  evas_object_resize(o, w, h);
+
+  evas_object_data_set(o, DATA_KEY, cairo_surface);
+
+  evas_object_event_callback_del(
+    o, EVAS_CALLBACK_DEL, _esmart_image_cairo_died);
+  evas_object_event_callback_add(
+    o, EVAS_CALLBACK_DEL, _esmart_image_cairo_died, NULL);
+
+  return 1;
 }
 
 static void
 _esmart_image_cairo_fill_auto(Evas_Object *o)
 {
-   Evas_Coord w, h;
+  Evas_Coord w, h;
 
-   evas_object_geometry_get(o, NULL, NULL, &w, &h);
-   evas_object_image_fill_set(o, 0, 0, w, h);
+  evas_object_geometry_get(o, NULL, NULL, &w, &h);
+  evas_object_image_fill_set(o, 0, 0, w, h);
 }
 
 static void
 _esmart_image_cairo_resized(void *data, Evas *e, Evas_Object *o, void *einfo)
 {
-   _esmart_image_cairo_fill_auto(o);
+  _esmart_image_cairo_fill_auto(o);
 }
 
 /**
@@ -282,29 +282,29 @@ _esmart_image_cairo_resized(void *data, Evas *e, Evas_Object *o, void *einfo)
 void
 esmart_image_cairo_fill_auto_set(Evas_Object *o, Eina_Bool enable)
 {
-   evas_object_event_callback_del(
-      o, EVAS_CALLBACK_RESIZE, _esmart_image_cairo_resized);
+  evas_object_event_callback_del(
+    o, EVAS_CALLBACK_RESIZE, _esmart_image_cairo_resized);
 
-   if (enable)
-     {
-	evas_object_event_callback_add(
-           o, EVAS_CALLBACK_RESIZE, _esmart_image_cairo_resized, NULL);
-	_esmart_image_cairo_fill_auto(o);
-     }
-   else
-     {
-	cairo_surface_t *cairo_surface;
-	int w, h;
+  if (enable)
+  {
+    evas_object_event_callback_add(
+      o, EVAS_CALLBACK_RESIZE, _esmart_image_cairo_resized, NULL);
+    _esmart_image_cairo_fill_auto(o);
+  }
+  else
+  {
+    cairo_surface_t *cairo_surface;
+    int w, h;
 
-	cairo_surface = evas_object_data_get(o, DATA_KEY);
-	if (!cairo_surface)
-	  {
-	     err("no cairo surface found for object");
-	     return;
-	  }
+    cairo_surface = evas_object_data_get(o, DATA_KEY);
+    if (!cairo_surface)
+    {
+      err("no cairo surface found for object");
+      return;
+    }
 
-	w = cairo_image_surface_get_width(cairo_surface);
-	h = cairo_image_surface_get_height(cairo_surface);
-	evas_object_image_fill_set(o, 0, 0, w, h);
-     }
+    w = cairo_image_surface_get_width(cairo_surface);
+    h = cairo_image_surface_get_height(cairo_surface);
+    evas_object_image_fill_set(o, 0, 0, w, h);
+  }
 }
