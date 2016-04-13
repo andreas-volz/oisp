@@ -18,32 +18,32 @@
 #include "OICFMediaProviderImpl.h"
 
 /* EFLxx */
-//#include <ecorexx/Ecorexx.h>
-//#include <emotionxx/Emotionxx.h>
+#include <ecorexx/Ecorexx.h>
+#include <emotionxx/Emotionxx.h>
 
 #include "Player.h"
 
 #include <dbus-c++/dbus.h>
 #include <glibmm.h>
-//#include <dbus-c++/ecore-integration.h>
+#include <dbus-c++/ecore-integration.h>
 
 
 
 static const char *SERVER_NAME = "org.oicf.Media";
 
 using namespace std;
-//using namespace Eflxx;
+using namespace Eflxx;
 
 int width = 800;
 int height = 600;
 
-//DBus::Ecore::BusDispatcher dispatcher;
-DBus::BusDispatcher dispatcher;
+DBus::Ecore::BusDispatcher dispatcher;
+//DBus::BusDispatcher dispatcher;
 
 
 void niam(int sig)
 {
-  dispatcher.leave();
+  //dispatcher.leave();
   //app->quit ();
   cerr << "Quit application..." << endl;
 }
@@ -56,19 +56,19 @@ int main(int argc, const char **argv)
   signal(SIGINT, niam);
 
   /* Create the application object */
-  //Ecorexx::Application app(argc, argv, "OISPMedia");
+  Ecorexx::Application app(argc, argv, "OISPMedia");
 
   /* Create the main window, a window with an embedded canvas */
-  //Ecorexx::EvasWindowSoftwareX11 *mw = new Ecorexx::EvasWindowSoftwareX11(Size(0, 0));
-  //Evasxx::Canvas &evas = mw->getCanvas();
+  Ecorexx::EvasWindowSoftwareX11 *mw = new Ecorexx::EvasWindowSoftwareX11(Size(0, 0));
+  Evasxx::Canvas &evas = mw->getCanvas();
 
   /* Create Emotionxx::Object object using xine engine */
-  //Emotionxx::AudioObject *emotion = new Emotionxx::AudioObject(evas, "gstreamer");
+  Emotionxx::AudioObject *emotion = new Emotionxx::AudioObject(evas, "gstreamer");
 
   // initialize Glib thread system
-  if (!Glib::thread_supported()) Glib::thread_init();
+  //if (!Glib::thread_supported()) Glib::thread_init();
 
-  Player player/*(emotion)*/;
+  Player player(emotion);
 
   DBus::default_dispatcher = &dispatcher;
 
@@ -88,8 +88,8 @@ int main(int argc, const char **argv)
   cout << "OISPMedia server started..." << endl;
 
   /* Enter the application main loop */
-  //app.exec();
-  dispatcher.enter();
+  app.exec();
+  //dispatcher.enter();
 
   return 0;
 }

@@ -61,6 +61,11 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
   dirList2.setRecursive(DirectoryList::NO_RECURSIVE);
   dirList2.setFullPath(false);  
   dirList2.setFileType(DirectoryList::REGULAR_FILE);
+  // TODO: add better generic support for this (e.g. regex)
+  dirList2.addFileFilter("ogg");
+  dirList2.addFileFilter("mp3");
+  dirList2.addFileFilter("MP3");
+  dirList2.addFileFilter("OGG");
   m_Files = dirList2.getDirectoryList();
   for (list<string>::const_iterator dir_it = m_Files.begin();
        dir_it != m_Files.end();
@@ -205,7 +210,7 @@ void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
     {
       m_player->stop();
       cout << "Play: " << lfound->name << endl;
-      m_player->open("file://" + m_CurrentPath + "/" + lfound->name);
+      m_player->open(m_CurrentPath + "/" + lfound->name);
       m_playingTitleID = lfound->id;
       m_player->play();
       m_MediaListenerProvider->updateSelectedTitle(*lfound);
@@ -252,17 +257,16 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
   {
     if(title.type == Line::Title)
     {
-      const string playString("file://" + m_CurrentPath + "/" + lfound->name);
+      const string playString(m_CurrentPath + "/" + lfound->name);
       cout << "Line::Title" << endl;
 
       cout << "Play: " << playString << endl;
 
       m_player->stop();
-      
       m_player->open(playString);
       m_player->play();
       m_MediaListenerProvider->updateSelectedTitle(*lfound);
-      m_PlayingPath = m_CurrentPath;
+      //m_PlayingPath = m_CurrentPath;
     }
     else if(title.type == Line::Folder)
     {

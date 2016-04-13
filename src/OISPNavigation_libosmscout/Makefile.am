@@ -44,13 +44,13 @@ OISPNavigation_libosmscout_LDADD =  \
 	$(GLIBMM_LIBS)  \
 	$(EFL_LIBS)  \
 	$(OICFPROVIDER_LIBS) \
-        $(LOG4CXX_LIBS)
+	$(LOG4CXX_LIBS)
 
 
 OISPNavigation_libosmscout_CXXFLAGS =  \
 	$(PROFILING_CFLAGS)  \
 	$(DBUSMM_CFLAGS)  \
-        $(DBUSMMECORE_CFLAGS)  \
+	$(DBUSMMECORE_CFLAGS)  \
 	$(LIBOSMSCOUT_CFLAGS)  \
 	$(GPS_CFLAGS)  \
 	$(SIGC_CFLAGS)  \
@@ -59,10 +59,11 @@ OISPNavigation_libosmscout_CXXFLAGS =  \
 	$(PROFILING_CFLAGS)  \
 	$(OICFPROVIDER_CFLAGS) \
 	$(STOPCLOCK_CFLAGS) \
-        $(LOG4CXX_CFLAGS)
+	$(LOG4CXX_CFLAGS)
 
 OISPNavigation_libosmscout_CFLAGS = \
-        $(EFL_CFLAGS)
+	$(EFL_CFLAGS) \
+	$(LIBOSMSCOUT_CFLAGS)  
 
 ## File created by the gnome-build tools
 

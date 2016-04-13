@@ -30,6 +30,8 @@ void DirectoryList::clearFileFilter()
 
 bool DirectoryList::hasFileFilterEnding(const string &file) const
 {
+  bool found = false;
+  
   // if no file filter is set catch all files
   if(fileFilterList.size() > 0)
   {
@@ -42,14 +44,18 @@ bool DirectoryList::hasFileFilterEnding(const string &file) const
       if (ending.length() > file.length())
         return false;
 
-      return (file.find(ending, file.length() - ending.length()) != string::npos);
+      found = file.find(ending, file.length() - ending.length()) != string::npos;
+      if(found)
+      {
+        return found;
+      }
     }
 
-    return false;
+    return found;
   }
   else
   {
-    return true;
+    return found;
   }
 }
 
