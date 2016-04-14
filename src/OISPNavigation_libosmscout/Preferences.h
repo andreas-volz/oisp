@@ -27,14 +27,14 @@ public:
   void setDesktopLayer(bool desktop);
   bool getDesktopLayer();
 
-  //void setNaviMapFolder(const std::string &folder);
-  //std::string getNaviMapFolder(); 
+  void setNaviMapFolder(const std::string &folder);
+  std::string getNaviMapFolder(); 
 
 private:
   std::string mGPSDHost;
   int mGPSDPort;
   bool mDesktopLayer;
-  //std::string mNaviMapFolder;
+  std::string mNaviMapFolder;
 };
 
 #endif // PREFERENCES_H

@@ -1,4 +1,5 @@
 #include "Preferences.h"
+#include "searchFile.h"
 
 #ifdef HAVE_CONFIG_H
   #include <config.h>
@@ -17,7 +18,7 @@ void Preferences::init ()
   mGPSDHost = "localhost"; // default gpsd host
   mGPSDPort = 2947; // default gpsd port
   mDesktopLayer = false; 
-  //mNaviMapFolder = string(PACKAGE_DATA_DIR) +  "/osmscout/map/current/"; // FIXME: hard coded developer path, put this to config file
+  mNaviMapFolder = searchNaviDir();
 }
 
 void Preferences::setGPSHost(const std::string &host)
@@ -50,7 +51,7 @@ bool Preferences::getDesktopLayer()
   return mDesktopLayer;
 }
 
-/*void Preferences::setNaviMapFolder(const std::string &folder)
+void Preferences::setNaviMapFolder(const std::string &folder)
 {
   mNaviMapFolder = folder;
 }
@@ -58,4 +59,4 @@ bool Preferences::getDesktopLayer()
 std::string Preferences::getNaviMapFolder() 
 {
   return mNaviMapFolder;
-}*/
+}

@@ -150,7 +150,7 @@ int parseOptions(int argc, char **argv)
 
   if(options[NAVIMAP].count() > 0)
   {
-    //preferences.setNaviMapFolder(options[NAVIMAP].arg);
+    preferences.setNaviMapFolder(options[NAVIMAP].arg);
   }
  
   for(option::Option* opt = options[UNKNOWN]; opt; opt = opt->next())

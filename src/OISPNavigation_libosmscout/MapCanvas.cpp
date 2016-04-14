@@ -28,8 +28,6 @@ using namespace osmscout;
 MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   Esmartxx::Cairo(canvas, size, true),
   mLogger("oisp.Navigation.MapCanvas"),
-  //mMapFolder(string(PACKAGE_DATA_DIR) +  "/osmscout/map/current/"),
-  mMapFolder("/home/andreas/.osmscout/map/current"),
   mDatabase(std::make_shared<osmscout::Database>(mDatabaseParameter)),
   //mRoutingProfile(mDatabase->GetTypeConfig()),
   mStyleConfig(NULL),
@@ -39,7 +37,7 @@ MapCanvas::MapCanvas(Evasxx::Canvas &canvas, const Eflxx::Size &size) :
   mCairoSurface(NULL),
   mCairo(NULL),  
   mSize(size)
-{
+{  
   // this sets the widget itsef to visible
   setVisible(true);
 
@@ -91,12 +89,13 @@ void MapCanvas::destroySurface()
 
 void MapCanvas::initOSMScout()
 {
-  std::string style(mMapFolder + "/standard.oss");
-	
   Preferences &preferences = Preferences::instance ();
-  //std::string map (preferences.getNaviMapFolder());
-  
 
+  mMapFolder = preferences.getNaviMapFolder();
+  LOG4CXX_INFO(mLogger,  "load map from folder: " <<  mMapFolder);
+  
+  std::string style(mMapFolder + "/standard.oss");
+	  
   if (!mDatabase->Open(mMapFolder))
   {
     LOG4CXX_ERROR(mLogger, "Cannot open database: " + mMapFolder);
@@ -123,19 +122,6 @@ void MapCanvas::initOSMScout()
   mStyleConfig = newStyleConfig;
 
   mPainter = new MapPainterCairo(mStyleConfig);
-
-  /*mRouter = std::make_shared<osmscout::RoutingService>(mDatabase,
-                                                       mRouterParameter,
-                                                       osmscout::RoutingService::DEFAULT_FILENAME_BASE);
-
-  
-  if (!mRouter->Open())
-  {
-    std::cerr << "Cannot open routing" << std::endl;
-    exit(1);
-    // TODO: throw Exception
-  }*/
-
 }
 
 void MapCanvas::GetCarSpeedTable(std::map<std::string,double>& map)
