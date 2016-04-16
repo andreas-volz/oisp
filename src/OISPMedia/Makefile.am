@@ -6,11 +6,19 @@ OISPMedia_SOURCES = \
 	main.cpp   \
 	DirectoryList.cpp   \
 	DirectoryList.h   \
-	util.h   \
 	OICFMediaProviderImpl.cpp   \
 	OICFMediaProviderImpl.h   \
+	../common/util.h   \
+	../common/optionparser.h       \
+	../common/Logger.h \
+	../common/FileNotFoundException.cpp \
+	../common/FileNotFoundException.h \
+	Preferences.cpp \
+	Preferences.h \
 	Player.cpp   \
 	Player.h \
+	searchFile.cpp   \
+	searchFile.h   \
 	MathUtil.h
 
 OISPMedia_LDADD = \

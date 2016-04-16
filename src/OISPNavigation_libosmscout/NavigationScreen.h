@@ -7,7 +7,7 @@
 #include "EcoreDispatcher.h"
 #include "ScreenManager.h"
 #include "MapCanvas.h"
-#include "util.h"
+#include "../common/util.h"
 
 class NavigationScreen
 {

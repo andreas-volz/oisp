@@ -5,7 +5,7 @@
 #include <iostream>
 #include "GPSConnection.h"
 #include <cstring>
-#include "util.h"
+#include "../common/util.h"
 
 using namespace std;
 

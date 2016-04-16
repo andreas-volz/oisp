@@ -4,10 +4,10 @@ bin_PROGRAMS = \
 
 OISPControl_simu_SOURCES = \
 	main.cpp \
+	../common/FileNotFoundException.cpp \
+	../common/FileNotFoundException.h \
 	searchFile.cpp \
 	searchFile.h \
-	FileNotFoundException.cpp \
-	FileNotFoundException.h \
 	OICFControlListenerProviderImpl.cpp \
 	OICFControlListenerProviderImpl.h \
 	Simulation.cpp \

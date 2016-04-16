@@ -1,0 +1,13 @@
+*~
+*.o
+*.lo
+*.la
+.anjuta*
+Makefile.in
+Makefile
+.libs
+.deps
+config.*
+*.pc
+stamp-h1
+install-sh

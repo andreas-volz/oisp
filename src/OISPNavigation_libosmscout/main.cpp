@@ -26,15 +26,17 @@
 #include <dbus-c++/dbus.h>
 #include <dbus-c++/ecore-integration.h>
 
+/* common */
+#include "../common/optionparser.h"
+#include "../common/Logger.h"
+
 /* local */
 #include "ScreenManager.h"
 #include "NavigationScreen.h"
 #include "Navigation.h"
 #include "OICFNavigationProviderImpl.h"
-#include "optionparser.h"
 #include "Preferences.h"
 #include "searchFile.h"
-#include "Logger.h"
 
 static const char *MAP_VIEWER_NAME = "org.oicf.Navigation";
 
@@ -58,7 +60,6 @@ void sig_exit(int sig)
 }
 
 /** option parser **/
-
 struct Arg: public option::Arg
 {
   static void printError(const char* msg1, const option::Option& opt, const char* msg2)
@@ -120,7 +121,7 @@ enum  optionIndex { UNKNOWN, HELP, DESKTOP, GPSDPORT, NAVIMAP };
   {0,0,0,0,0,0}
  };
 
-int parseOptions(int argc, char **argv)
+int parseOptions(int argc, const char **argv)
 {
   Preferences &preferences = Preferences::instance ();
   argc -= (argc > 0); argv += (argc > 0); // skip program name argv[0] if present
@@ -166,7 +167,7 @@ int parseOptions(int argc, char **argv)
 
 Eina_Bool eina_list_init(void);
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
   signal(SIGTERM, sig_exit);
   signal(SIGINT, sig_exit);

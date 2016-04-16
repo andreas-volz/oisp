@@ -2,7 +2,6 @@
 #include <config.h>
 #endif
 
-#include "OICFMediaProviderImpl.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -12,19 +11,25 @@
 #include <stdexcept>
 #include "DirectoryList.h"
 #include "glibmm.h"
-#include "util.h"
+#include "../common/util.h"
+
+/* local */
+#include "OICFMediaProviderImpl.h"
+#include "Preferences.h"
 
 using namespace std;
 
 OICFMediaProviderImpl::OICFMediaProviderImpl(DBus::Connection &connection)
   : OICFMediaProvider(connection),
     m_MediaListenerProvider(NULL),
-    m_RootPath("/home/andreas/Musik"),
-    m_CurrentPath("/home/andreas/Musik"),
     m_player(NULL),
     m_playingTitleID(Line::InvalidID),
     mStartup(true)
 {
+  Preferences &preferences = Preferences::instance ();
+  
+  m_RootPath = preferences.getMusicRootFolder();
+  m_CurrentPath = m_RootPath;
 }
 
 void OICFMediaProviderImpl::setPlayer(Player *p)

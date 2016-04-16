@@ -95,7 +95,7 @@ PKG_CHECK_MODULES(DBUSMMECORE, dbus-c++-1 dbus-c++-ecore-1)
 AC_SUBST(DBUSMMECORE_CFLAGS)
 AC_SUBST(DBUSMMECORE_LIBS)
 
-PKG_CHECK_MODULES(EFL, evasxx edjexx ecorexx emotionxx)
+PKG_CHECK_MODULES(EFL, evasxx edjexx ecorexx emotionxx efreet)
 AC_SUBST(EFL_CFLAGS)
 AC_SUBST(EFL_LIBS)
 

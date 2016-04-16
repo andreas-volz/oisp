@@ -17,7 +17,7 @@
 #include <StopClock/StopClock.h>
 #endif
 
-#include "Logger.h"
+#include "../common/Logger.h"
 
 class MapCanvas : public Esmartxx::Cairo
 {

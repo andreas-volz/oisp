@@ -21,7 +21,7 @@ ScreenManager::~ScreenManager()
 {
 }
 
-void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
+void ScreenManager::init(int argc, const char **argv, const Eflxx::Size &size)
 {
   Preferences &preferences = Preferences::instance ();
   
@@ -30,7 +30,7 @@ void ScreenManager::init(int argc, char **argv, const Eflxx::Size &size)
   mSize = size;
 
   /* Create the application object */
-  app = new Ecorexx::Application(argc, (const char **) argv, "OISPMapViewer");
+  app = new Ecorexx::Application(argc, argv, "OISPMapViewer");
 
   /* Create the main window, a window with an embedded canvas */
   mw = new Ecorexx::EvasWindowSoftwareX11(mSize);

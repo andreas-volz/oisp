@@ -7,7 +7,7 @@
 
 #include "GPSConnection.h"
 #include <OICFNavigation/OICFNavigationListenerProvider.h>
-#include "Logger.h"
+#include "../common/Logger.h"
 
 /* Eflxx */
 #include <ecorexx/Ecorexx.h>

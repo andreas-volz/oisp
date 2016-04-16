@@ -38,7 +38,7 @@ private:
   std::string m_CurrentPath;
   std::string m_PlayingPath;
   LineVector m_CurrentPathVector;
-  const std::string m_RootPath;
+  std::string m_RootPath;
   Player *m_player;
   int m_playingTitleID;
   LineVector mFilelist;

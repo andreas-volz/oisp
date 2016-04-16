@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <iostream>
 #include "searchFile.h"
-#include "FileNotFoundException.h"
+#include "../common/FileNotFoundException.h"
 
 using namespace std;
 

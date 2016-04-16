@@ -10,10 +10,9 @@
 
 /* Local */
 #include "MapCanvas.h"
-#include "util.h"
+#include "../common/util.h"
 #include "Vector2.h"
 #include "Preferences.h"
-//#include "MemoryUtil.h"
 
 #ifdef PROFILING
 // StopClock

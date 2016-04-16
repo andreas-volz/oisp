@@ -3,7 +3,7 @@
 
 #include <dbus-c++/dbus.h>
 #include <OICFNavigation/OICFNavigationProvider.h>
-#include "Logger.h"
+#include "../common/Logger.h"
 
 /* forward declarations */
 class Navigation;

@@ -4,6 +4,11 @@ bin_PROGRAMS = \
 
 OISPNavigation_libosmscout_SOURCES = \
 	main.cpp       \
+	../common/util.h       \
+	../common/optionparser.h       \
+	../common/Logger.h \
+	../common/FileNotFoundException.cpp       \
+	../common/FileNotFoundException.h       \
 	GPSConnection.cpp       \
 	GPSConnection.h       \
 	Navigation.cpp       \
@@ -14,11 +19,8 @@ OISPNavigation_libosmscout_SOURCES = \
 	NavigationScreen.h       \
 	OICFNavigationProviderImpl.cpp       \
 	OICFNavigationProviderImpl.h       \
-	util.h       \
 	searchFile.cpp       \
 	searchFile.h       \
-	FileNotFoundException.cpp       \
-	FileNotFoundException.h       \
 	ScreenManager.cpp       \
 	ScreenManager.h       \
 	MapCanvas.cpp       \
@@ -29,10 +31,9 @@ OISPNavigation_libosmscout_SOURCES = \
 	esmart_cairo.c \
 	Esmart_Cairo.h \
 	Vector2.h       \
-	optionparser.h       \
 	Preferences.cpp       \
-	Preferences.h  \
-        Logger.h
+	Preferences.h  
+	
 
 OISPNavigation_libosmscout_LDADD =  \
 	$(PROFILING_LIBS)  \
