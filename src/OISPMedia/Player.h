@@ -11,6 +11,9 @@
 #include <cstdlib>
 #include <stdint.h>
 
+/* common */
+#include "../common/Logger.h"
+
 class Player
 {
 public:
@@ -21,20 +24,22 @@ public:
   sigc::signal <void, const int64_t &, const int64_t &> signalUpdatePlayPosition;
   sigc::signal <void> signalNextTitle;
 
-  virtual void play(void);
-  virtual void pause(void);
-  virtual void stop(void);
-  virtual void rewind(void);
-  virtual void forward(void);
+  virtual void play();
+  virtual void pause();
+  virtual void stop();
+  virtual void rewind();
+  virtual void forward();
   virtual void open(std::string uri);
 
 protected:
 
 
 private:
+  Logger mLogger;
   Emotionxx::AudioObject *mEmotion;
 
   void playBackFinished(Evasxx::Object &obj, void *event_info);
+  void decodeStop(Evasxx::Object &obj, void *event_info);
 
   enum PlayState
   {

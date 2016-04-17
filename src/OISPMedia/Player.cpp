@@ -12,9 +12,11 @@ using namespace std;
 
 Player::Player(Emotionxx::AudioObject *emotion) :
   mEmotion(emotion),
+  mLogger("oisp.Media.Player"),
   mPlayState(STOPPED)
 {
   mEmotion->getEventSignal("playback_finished")->connect(sigc::mem_fun(this, &Player::playBackFinished));
+  mEmotion->getEventSignal("decode_stop")->connect(sigc::mem_fun(this, &Player::decodeStop));
 }
 
 Player::~Player()
@@ -22,34 +24,42 @@ Player::~Player()
 
 }
 
-void Player::play(void)
+void Player::play()
 {
-  cout << "play" << endl;
+  LOG4CXX_TRACE(mLogger,  "play");
   mPlayState = PLAYING;
   mEmotion->setPlay(true);
 }
 
-void Player::pause(void)
+void Player::pause()
 {
-  cout << "pause" << endl;
-  mPlayState = PAUSED;
-  mEmotion->setPlay(false);
+  LOG4CXX_TRACE(mLogger,  "pause");
+
+  if(mPlayState == PAUSED)
+  {
+    play();
+  }
+  else if(mPlayState == PLAYING)
+  {
+    mPlayState = PAUSED;
+    mEmotion->setPlay(false);
+  }
 }
 
-void Player::stop(void)
+void Player::stop()
 {
-  cout << "stop" << endl;
+  LOG4CXX_TRACE(mLogger,  "stop");
   mPlayState = STOPPED;
   mEmotion->setPlay(false);
   // TODO: rewind?
 }
 
-void Player::rewind(void)
+void Player::rewind()
 {
 
 }
 
-void Player::forward(void)
+void Player::forward()
 {
 
 }
@@ -61,8 +71,18 @@ void Player::open(std::string uri)
 
 void Player::playBackFinished(Evasxx::Object &obj, void *event_info)
 {
-  cout << "Position: " << mEmotion->getPosition () << " state: " << mPlayState << endl;
+  LOG4CXX_TRACE(mLogger,  "playBackFinished: " << mPlayState);
+  
+  if(mPlayState == PLAYING)
+  {
+    //signalNextTitle.emit();
+  }
+}
 
+void Player::decodeStop(Evasxx::Object &obj, void *event_info)
+{
+  LOG4CXX_TRACE(mLogger,  "decodeStop: " << mPlayState);
+  
   if(mPlayState == PLAYING)
   {
     signalNextTitle.emit();

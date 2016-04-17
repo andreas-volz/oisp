@@ -21,7 +21,7 @@ Preferences& Preferences::instance()
 void Preferences::init ()
 {
   mMusicRootFolder = "/home/andreas/Musik"; // efreet_music_dir_get(); => why crash?
-  mEmotionEngine = "gstreamer";
+  mEmotionEngine = "gstreamer1";
 }
 
 void Preferences::setMusicRootFolder(const std::string &folder)

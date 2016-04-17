@@ -5,6 +5,11 @@
 #include <OICFMedia/OICFMediaProvider.h>
 #include <OICFMedia/OICFMediaListenerProvider.h>
 #include <vector>
+
+/* common */
+#include "../common/Logger.h"
+
+/* local */
 #include "Player.h"
 
 class OICFMediaProviderImpl : public OICFMediaProvider
@@ -27,11 +32,13 @@ public:
   void incrementTitle(const int32_t &num);
   void decrementTitle(const int32_t &num);
   void selectTitle(const Line &title);
+  void pause();
 
 private:
   void updatePlayPositionWrap(const int64_t &pos, const int64_t &duration);
   void nextTitle();
 
+  Logger mLogger;
   OICFMediaListenerProvider *m_MediaListenerProvider;
   std::list <std::string> m_Dirs;
   std::list <std::string> m_Files;

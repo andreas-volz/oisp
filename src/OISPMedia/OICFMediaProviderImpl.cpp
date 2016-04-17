@@ -21,6 +21,7 @@ using namespace std;
 
 OICFMediaProviderImpl::OICFMediaProviderImpl(DBus::Connection &connection)
   : OICFMediaProvider(connection),
+    mLogger("oisp.Media.OICFMediaProviderImpl"),
     m_MediaListenerProvider(NULL),
     m_player(NULL),
     m_playingTitleID(Line::InvalidID),
@@ -45,7 +46,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
   m_Dirs.clear();
   mFilelist.clear();
 
-  cout << "getWindowList()" << endl;
+  LOG4CXX_TRACE(mLogger, "getWindowList()");
 
   DirectoryList dirList;
   dirList.setRootPath(m_CurrentPath);
@@ -58,7 +59,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
        ++dir_it)
   {
     const string &dir = *dir_it;
-    cout << "D: " << dir << endl;
+    LOG4CXX_TRACE(mLogger, "D: " << dir);
   }
 
   DirectoryList dirList2;
@@ -77,7 +78,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
        ++dir_it)
   {
     const string &dir = *dir_it;
-    cout << "F:" << dir << endl;
+    LOG4CXX_TRACE(mLogger, "F: " << dir);
   }
   
   m_Dirs.sort();
@@ -106,7 +107,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     l.name = dir;
     l.type = Line::Folder;
     l.id = i;
-    cout << "Dir: " << dir << endl;
+    LOG4CXX_TRACE(mLogger, "Dir: " << dir);
     mFilelist.push_back(l);
     ++i;
   }
@@ -124,7 +125,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     l.name = file;
     l.type = Line::Title;
     l.id = i;
-    cout << "File: " << file << endl;
+    LOG4CXX_TRACE(mLogger, "File: " << file);
     if ((m_playingTitleID == i) && (m_PlayingPath == m_CurrentPath))
     {
       playingTitle = l;
@@ -133,7 +134,7 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
     if (mStartup)
     {
       // play first file at startup
-      cout << "play at startup: " << l.name << endl;
+      LOG4CXX_TRACE(mLogger, "play at startup:: " << l.name);
       m_player->open(m_RootPath + "/" + file);
       m_player->play();
       m_playingTitleID = l.id;
@@ -150,13 +151,11 @@ void OICFMediaProviderImpl::getWindowList(const int32_t &start, const int32_t &e
   {
     m_MediaListenerProvider->updateSelectedTitle(playingTitle);
   }
-
-  cout << "OICFMediaProviderImpl::getWindowList" << endl;
 }
 
 void OICFMediaProviderImpl::selectPath(const LineVector &path)
 {
-  cout << "OICFMediaProviderImpl::selectPath" << endl;
+  LOG4CXX_TRACE(mLogger, "selectPath");
 
   // TODO: later use device as root
   m_CurrentPath = m_RootPath;
@@ -189,7 +188,7 @@ void OICFMediaProviderImpl::nextTitle()
 
 void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
 {
-  cout << "OICFMediaProviderImpl::incrementTitle" << endl;
+  LOG4CXX_TRACE(mLogger, "incrementTitle");
 
   if (m_playingTitleID >= 0)
   {
@@ -214,7 +213,7 @@ void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
     if (lfound)
     {
       m_player->stop();
-      cout << "Play: " << lfound->name << endl;
+      LOG4CXX_TRACE(mLogger, "Play: " << lfound->name);
       m_player->open(m_CurrentPath + "/" + lfound->name);
       m_playingTitleID = lfound->id;
       m_player->play();
@@ -222,16 +221,14 @@ void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
     }
     else
     {
-      cout << "File not found in media list!" << endl;
+      LOG4CXX_ERROR(mLogger, "File not found in media list!");
     }
-
-    m_MediaListenerProvider->updateSelectedTitle(*lfound);
   }
 }
 
 void OICFMediaProviderImpl::decrementTitle(const int32_t &num)
 {
-  cerr << "decrementTitle not yet implemented!" << endl;
+  LOG4CXX_TRACE(mLogger, "decrementTitle not yet implemented!");
 }
 
 void OICFMediaProviderImpl::selectTitle(const Line &title)
@@ -239,7 +236,7 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
   const Line *lfound = NULL;
   m_playingTitleID = Line::InvalidID;
 
-  cout << "OICFMediaProviderImpl::selectTitle" << endl;
+  LOG4CXX_TRACE(mLogger, "selectTitle");
 
   for (LineVector::const_iterator vs_it = mFilelist.begin();
        vs_it != mFilelist.end();
@@ -263,19 +260,18 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
     if(title.type == Line::Title)
     {
       const string playString(m_CurrentPath + "/" + lfound->name);
-      cout << "Line::Title" << endl;
+      LOG4CXX_TRACE(mLogger, "Line::Title");
 
-      cout << "Play: " << playString << endl;
+      LOG4CXX_TRACE(mLogger, "Play: " << playString);
 
       m_player->stop();
       m_player->open(playString);
       m_player->play();
       m_MediaListenerProvider->updateSelectedTitle(*lfound);
-      //m_PlayingPath = m_CurrentPath;
     }
     else if(title.type == Line::Folder)
     {
-      cout << "Line::Folder" << endl;
+      LOG4CXX_TRACE(mLogger, "Line::Folder");
 
       m_CurrentPathVector.push_back(title);
 
@@ -291,13 +287,18 @@ void OICFMediaProviderImpl::selectTitle(const Line &title)
       
       getWindowList(0, 100);
       
-      cout << "Line::FolderUp" << endl;
+      LOG4CXX_TRACE(mLogger, "Line::FolderUp");
     }
   }
   else
   {
-    cerr << "File not found in media list!" << endl;
+    LOG4CXX_ERROR(mLogger, "File not found in media list!");
   }
+}
+
+void OICFMediaProviderImpl::pause()
+{
+  m_player->pause();
 }
 
 void OICFMediaProviderImpl::updatePlayPositionWrap(const int64_t &pos, const int64_t &duration)

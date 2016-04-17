@@ -107,7 +107,7 @@ enum  optionIndex { UNKNOWN, HELP, ENGINE, MUSIC };
   {UNKNOWN, 0,"" , ""    ,option::Arg::None, "USAGE: example [options]\n\n"
                                              "Options:" },
   {HELP,    0,"h" , "help",option::Arg::None, "  --help, -h  \tPrint usage and exit." },
-  {ENGINE,0,"d" , "engine",Arg::Required, "  --engine, -e  \tLoad a emotion engine." },
+  {ENGINE,0,"e" , "engine",Arg::Required, "  --engine, -e  \tLoad a emotion engine." },
   {MUSIC, 0,"m" , "music-root",Arg::Required, "  --music-root, -m  \tSet folder to search music data." },
   {UNKNOWN, 0,""  ,  ""   ,option::Arg::None, "\nExamples:\n"
                                              "  example --unknown -- --this_is_no_option\n"
