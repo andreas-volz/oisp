@@ -210,19 +210,32 @@ void OICFMediaProviderImpl::incrementTitle(const int32_t &num)
       }
     }
 
-    if (lfound)
+    // if file wasn't found in playlist restart playlist
+    if (!lfound)
     {
-      m_player->stop();
-      LOG4CXX_TRACE(mLogger, "Play: " << lfound->name);
-      m_player->open(m_CurrentPath + "/" + lfound->name);
-      m_playingTitleID = lfound->id;
-      m_player->play();
-      m_MediaListenerProvider->updateSelectedTitle(*lfound);
+      LOG4CXX_INFO(mLogger, "Restart current playlist");
+
+      for (LineVector::const_iterator vs_it = mFilelist.begin();
+           vs_it != mFilelist.end();
+           ++vs_it)
+      {
+        const Line &l = *vs_it;
+
+        // choose first playable file
+        if (l.type == Line::Title)
+        {
+          lfound = &l;
+          break;
+        }
+      }
     }
-    else
-    {
-      LOG4CXX_ERROR(mLogger, "File not found in media list!");
-    }
+    
+    m_player->stop();
+    LOG4CXX_TRACE(mLogger, "Play: " << lfound->name);
+    m_player->open(m_CurrentPath + "/" + lfound->name);
+    m_playingTitleID = lfound->id;
+    m_player->play();
+    m_MediaListenerProvider->updateSelectedTitle(*lfound);
   }
 }
 
