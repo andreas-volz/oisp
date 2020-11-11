@@ -17,6 +17,7 @@ Player::Player(Emotionxx::AudioObject *emotion) :
 {
   mEmotion->getEventSignal("playback_finished")->connect(sigc::mem_fun(this, &Player::playBackFinished));
   mEmotion->getEventSignal("decode_stop")->connect(sigc::mem_fun(this, &Player::decodeStop));
+  mEmotion->getEventSignal("position_update")->connect(sigc::mem_fun(this, &Player::positionUpdate));
 }
 
 Player::~Player()
@@ -87,4 +88,29 @@ void Player::decodeStop(Evasxx::Object &obj, void *event_info)
   {
     signalNextTitle.emit();
   }
+}
+
+void Player::positionUpdate(Evasxx::Object &obj, void *event_info)
+{
+  static int old_position;
+  
+  double position = mEmotion->getPosition();
+  double duration = mEmotion->getPlayLength();
+
+  int p_sec = (int) position % 60;
+  int p_min = position / 60;
+  int p_hour = position / 3600;
+  
+  int d_sec = (int) duration % 60;
+  int d_min = duration / 60;
+  int d_hour = duration / 3600;
+
+  if(old_position != static_cast<int>(position))
+  {
+    LOG4CXX_INFO(mLogger, "duration = " << d_hour << "h " << d_min << "m " << d_sec << "s");
+    LOG4CXX_INFO(mLogger, "position = " << p_hour << "h " << p_min << "m " << p_sec << "s");
+    signalUpdatePlayPosition.emit(static_cast<int64_t>(position), static_cast<int64_t>(duration));
+  }
+
+  old_position = position;
 }

@@ -40,6 +40,7 @@ private:
 
   void playBackFinished(Evasxx::Object &obj, void *event_info);
   void decodeStop(Evasxx::Object &obj, void *event_info);
+  void positionUpdate(Evasxx::Object &obj, void *event_info);
 
   enum PlayState
   {
